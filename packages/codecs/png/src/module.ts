@@ -7,7 +7,7 @@
 import type { CodecAssets } from "./types.js";
 
 export interface BindgenPngGlue {
-  default: (module: BufferSource) => Promise<unknown>;
+  default: (input: { module_or_path: BufferSource }) => Promise<unknown>;
   dusrel_png_encode?: (
     rgba: Uint8Array,
     width: number,
@@ -43,7 +43,7 @@ export function loadModule(kind: "enc" | "dec"): Promise<BindgenPngGlue> {
     const glue = (await import(/* @vite-ignore */ jsUrl)) as BindgenPngGlue;
     const response = await fetch(wasmUrl);
     if (!response.ok) throw new Error(`Failed to fetch PNG codec WASM from ${wasmUrl}.`);
-    await glue.default(await response.arrayBuffer());
+    await glue.default({ module_or_path: await response.arrayBuffer() });
     return glue;
   })();
   cache.set(kind, promise);

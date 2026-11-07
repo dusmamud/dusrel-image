@@ -10,6 +10,8 @@ is generated at build time; this file records the standing list.
 | MozJPEG | `@dusrel/image-jpeg` | IJG licence / BSD-style (zlib-based) |
 | libwebp | `@dusrel/image-webp` | BSD 3-Clause |
 | libavif | `@dusrel/image-avif` | BSD 2-Clause |
+| png (Rust crate) | `@dusrel/image-png` | MIT OR Apache-2.0 |
+| wasm-bindgen | all Rust codec packages | MIT OR Apache-2.0 |
 | libaom | `@dusrel/image-avif` | BSD 2-Clause + patent grant |
 | Rust `png` crate | `@dusrel/image-png` | MIT / Apache-2.0 |
 | OxiPNG | `@dusrel/image-oxipng` | MIT |
