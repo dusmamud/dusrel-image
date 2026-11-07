@@ -1,0 +1,19 @@
+dusrel-image
+Copyright (c) 2026 dusrel
+
+This project includes WebAssembly builds of third-party image codec
+libraries. Those components are NOT covered by this project's MIT licence;
+they remain under their own licences, listed in THIRD_PARTY_LICENSES.md.
+
+Principal components (see THIRD_PARTY_LICENSES.md for the full list):
+- MozJPEG (IJG / Mozilla) — used by @dusrel/image-jpeg
+- libwebp (Google) — used by @dusrel/image-webp
+- libavif and libaom (Alliance for Open Media) — used by @dusrel/image-avif
+- Rust PNG crate, OxiPNG, resize / hqx / magic-kernel (Rust ecosystem) —
+  used by @dusrel/image-png, @dusrel/image-oxipng, @dusrel/image-resize
+- libjxl (JPEG XL team) — used by @dusrel/image-jxl (experimental)
+- libimagequant — used by @dusrel/image-quantize
+
+The codec packaging approach is modelled on jSquash and Google Squoosh
+(Apache License 2.0). Full attribution is generated from the exact dependency
+versions used in each build (see docs/WASM_BUILD.md).
