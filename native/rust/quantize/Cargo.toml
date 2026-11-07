@@ -1,0 +1,16 @@
+[package]
+name = "dusrel-quantize"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Dusrel glue around the quantizr crate for @dusrel/image-quantize."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# Exact pins, same discipline as the other codecs. quantizr is the
+# permissive (MIT) quantizer chosen on 2026-11-07 to replace
+# GPL-3.0 libimagequant — see docs/adr/0003 addendum.
+wasm-bindgen = "=0.2.130"
+quantizr = "=1.4.3"

@@ -132,3 +132,23 @@ jobs:
           name: resize-wasm
           path: wasm-out/resize
           if-no-files-found: error
+
+  rust-quantize:
+    name: Build Rust Quantize WASM (@dusrel/image-quantize)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the pinned Docker image
+        run: docker build --build-arg CODEC=quantize -t dusrel/rust-quantize native/rust
+      - name: Run the build and collect artifacts
+        run: |
+          mkdir -p wasm-out/quantize
+          docker run --rm -v "$PWD/wasm-out/quantize:/out" dusrel/rust-quantize
+          ls -la wasm-out/quantize
+      - name: Upload Quantize artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: quantize-wasm
+          path: wasm-out/quantize
+          if-no-files-found: error

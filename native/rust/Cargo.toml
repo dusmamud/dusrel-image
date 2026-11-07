@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["png", "oxipng", "resize"]
+members = ["png", "oxipng", "resize", "quantize"]
 
 [profile.release]
 opt-level = 3

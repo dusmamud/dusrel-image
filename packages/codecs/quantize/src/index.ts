@@ -1,10 +1,24 @@
 /**
  * @dusrel/image-quantize
  *
- * Lossy PNG via palette quantisation with a permissive Rust quantizer (WASM, lazy-loaded).
- *
- * Status: scaffold only — no functionality yet. The locked specification
- * for this package lives in docs/PRD.md, docs/TRD.md and this package's
- * README.md.
+ * Colour quantization via the Rust `quantizr` crate (WASM,
+ * lazy-loaded): reduce an image to a palette of at most 256
+ * colours plus per-pixel indices — the preparation step behind
+ * small palette PNGs. The engine is MIT-licensed quantizr,
+ * chosen to replace GPL libimagequant so this package stays MIT
+ * (docs/adr/0003 addendum).
  */
-export const PACKAGE_NAME = "@dusrel/image-quantize" as const;
+export {
+  init,
+  quantize,
+  quantizeToImageData,
+  resolveOptions,
+  resultToImageData,
+} from "./quantize.js";
+export { setCodecAssets } from "./module.js";
+export type {
+  CodecAssets,
+  QuantizeOptions,
+  QuantizeResult,
+  ResolvedQuantizeOptions,
+} from "./types.js";
