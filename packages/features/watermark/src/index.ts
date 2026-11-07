@@ -1,10 +1,20 @@
 /**
  * @dusrel/image-watermark
  *
- * Image and text watermarks with full placement control.
- *
- * Status: scaffold only — no functionality yet. The locked specification
- * for this package lives in docs/PRD.md, docs/TRD.md and this package's
- * README.md.
+ * Image and text watermarks for the @dusrel/image family. The
+ * layout maths (position, margins, tiling, scale) is pure and
+ * shared: image marks composite at pixel level anywhere
+ * (workers, tests), text marks draw through the platform canvas
+ * with the same placements. Position, opacity, scale and tiling
+ * are all developer-controlled, per the family rule.
  */
-export const PACKAGE_NAME = "@dusrel/image-watermark" as const;
+export { applyWatermark, compositeOne, scalePixels } from "./composite.js";
+export { placementsFor, resolveWatermarkOptions } from "./layout.js";
+export { drawTextWatermark } from "./text.js";
+export type {
+  PixelData,
+  Placement,
+  ResolvedWatermarkOptions,
+  WatermarkOptions,
+  WatermarkPosition,
+} from "./types.js";
