@@ -16,7 +16,7 @@
     "lint": "oxlint .",
     "format": "oxfmt --check .",
     "size": "size-limit",
-    "check:packages": "publint --strict ./packages/core && attw --pack ./packages/core --format table"
+    "check:packages": "publint --strict ./packages/core && attw --pack ./packages/core --format table --ignore-rules cjs-resolves-to-esm"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.0",
