@@ -1,19 +1,35 @@
 name: WASM build
 
-# Scaffold: becomes a real Dockerised codec build in Phase 3 (docs/WASM_BUILD.md).
+# Real codec builds happen here, inside pinned Docker images
+# (docs/WASM_BUILD.md). Artifacts are uploaded for review; verified
+# artifacts are committed into the codec packages and then exercised by
+# the browser-tests workflow before they can be released.
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "native/**"
+      - ".github/workflows/wasm-build.yml"
 
 permissions:
   contents: read
 
 jobs:
-  wasm:
-    name: WASM toolchain check
+  mozjpeg:
+    name: Build MozJPEG WASM (@dusrel/image-jpeg)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Show planned native layout
-        run: ls -la native && cat native/README.md
-      - name: Docker is available for the pinned codec builds
-        run: docker --version
+      - name: Build the pinned Docker image
+        run: docker build -t dusrel/mozjpeg native/mozjpeg
+      - name: Run the build and collect artifacts
+        run: |
+          mkdir -p wasm-out/mozjpeg
+          docker run --rm -v "$PWD/wasm-out/mozjpeg:/out" dusrel/mozjpeg
+          ls -la wasm-out/mozjpeg
+      - name: Upload MozJPEG artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: mozjpeg-wasm
+          path: wasm-out/mozjpeg
+          if-no-files-found: error

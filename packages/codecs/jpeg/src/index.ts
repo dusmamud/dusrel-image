@@ -2,9 +2,10 @@
  * @dusrel/image-jpeg
  *
  * MozJPEG codec (WASM, lazy-loaded). Separate encode/decode entries.
- *
- * Status: scaffold only — no functionality yet. The locked specification
- * for this package lives in docs/PRD.md, docs/TRD.md and this package's
- * README.md.
+ * The WASM artifacts live in this package's `codec/` folder and are
+ * built reproducibly from mozilla/mozjpeg v4.1.5 (see native/mozjpeg).
  */
-export const PACKAGE_NAME = "@dusrel/image-jpeg" as const;
+export { encode, initEncode, resolveEncodeOptions } from "./encode.js";
+export { decode, initDecode } from "./decode.js";
+export { setCodecAssets } from "./module.js";
+export type { CodecAssets, MozJpegEncodeOptions, ResolvedEncodeOptions } from "./types.js";
