@@ -3,6 +3,13 @@ import { abortError, toError, type BatchTask } from "./types.js";
 export interface WorkerPoolOptions {
   /** Number of Web Workers to spawn. Default 2. */
   size?: number;
+  /**
+   * Worker script type. Default 'module' (the image-core adapter
+   * is ESM). Use 'classic' for Blob-URL workers: Chromium cannot
+   * start module workers from blob: URLs on opaque-origin pages
+   * (e.g. about:blank) — it hangs silently instead of erroring.
+   */
+  type?: "module" | "classic";
 }
 
 export interface WorkerPool<TIn, TOut> {
@@ -75,7 +82,7 @@ export function createWorkerPool<TIn, TOut>(
   };
 
   const states: Array<WorkerState<TOut>> = Array.from({ length: size }, () => {
-    const worker = new Worker(url, { type: "module" });
+    const worker = new Worker(url, { type: options.type ?? "module" });
     const state: WorkerState<TOut> = { worker, occupied: false, current: undefined };
     worker.addEventListener("message", (event: MessageEvent) => {
       const data = event.data as { id?: number; ok?: boolean; value?: TOut; error?: string };

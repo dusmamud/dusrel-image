@@ -28,7 +28,7 @@ const results = await runBatch(files, (file) => processImage(file), {
 | `runBatch(items, task, options?)` | One-shot pool run; results in input order, failures as values |
 | `BatchQueue` | Long-lived queue: `add()` any time, `pause()` / `resume()` / `cancel()`, `drain()` |
 | `BatchController` | Pause/resume/abort control shared by runs and queues |
-| `createWorkerPool(url, { size })` | Real Web Workers behind a `BatchTask` |
+| `createWorkerPool(url, { size, type })` | Real Web Workers behind a `BatchTask` (`type: 'classic'` for Blob-URL workers — Chromium hangs on module workers from blob: URLs on opaque-origin pages) |
 
 ## Options that matter
 

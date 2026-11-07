@@ -36,7 +36,9 @@ test("worker pool processes a batch off the main thread", async ({ page }) => {
       };
     `;
     const url = URL.createObjectURL(new Blob([workerSource], { type: "text/javascript" }));
-    const pool = b.createWorkerPool<number, number>(url, { size: 2 });
+    // 'classic': Chromium hangs silently on module workers from
+    // blob: URLs on opaque-origin pages (about:blank).
+    const pool = b.createWorkerPool<number, number>(url, { size: 2, type: "classic" });
     try {
       const results = await b.runBatch([100, 200, 300, 400], pool.task, { concurrency: 2 });
       return results.map((x) => (x.status === "fulfilled" ? x.value : -1));
