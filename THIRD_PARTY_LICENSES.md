@@ -12,6 +12,8 @@ is generated at build time; this file records the standing list.
 | libavif | `@dusrel/image-avif` | BSD 2-Clause |
 | png (Rust crate) | `@dusrel/image-png` | MIT OR Apache-2.0 |
 | oxipng (Rust crate) | `@dusrel/image-oxipng` | MIT |
+| resize (Rust crate) | `@dusrel/image-resize` | MIT |
+| rgb (Rust crate) | `@dusrel/image-resize` (pixel types) | MIT |
 | wasm-bindgen | all Rust codec packages | MIT OR Apache-2.0 |
 | libaom | `@dusrel/image-avif` | BSD 2-Clause + patent grant |
 | Rust `png` crate | `@dusrel/image-png` | MIT / Apache-2.0 |

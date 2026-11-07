@@ -43,9 +43,14 @@ re-measured at build time.
   dropped on licence grounds (GPL-3.0-or-later) so this package stays MIT
   (see THIRD_PARTY_LICENSES.md).
 
-## Resize — `@dusrel/image-resize` (Rust resize / hqx / magic-kernel)
+## Resize — `@dusrel/image-resize` (Rust resize crate)
 - Algorithms: Lanczos3 (default for downscale), Mitchell, Catmull-Rom,
-  Triangle, Nearest (pixel art), hqx (upscale of pixel art).
+  Triangle, Nearest (pixel art), B-spline, Gaussian.
+- Status note (2026-11-07): hqx (pixel-art upscaler) was listed here
+  from the jSquash survey, but the `resize` crate does not contain
+  an hqx implementation. Rather than promise it silently, hqx is
+  tracked as future work (a dedicated permissive implementation);
+  the seven filters above are what v1 ships.
 - Handles premultiplied alpha correctly; the Canvas fast path remains the
   default when the developer does not select this package.
 
