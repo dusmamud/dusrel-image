@@ -7,7 +7,6 @@ describe("resolveEncodeOptions", () => {
     expect(resolveEncodeOptions()).toEqual({
       compression: "default",
       filter: "adaptive",
-      interlace: false,
     });
   });
 
