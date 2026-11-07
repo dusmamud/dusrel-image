@@ -14,6 +14,11 @@ describe("public surface", () => {
     expect(typeof pkg.processBatch).toBe("function");
     expect(typeof pkg.runPool).toBe("function");
     expect(typeof pkg.downgradeChain).toBe("function");
+    expect(typeof pkg.codecPlugin).toBe("function");
+    expect(typeof pkg.imageDataPlugin).toBe("function");
+    expect(typeof pkg.blobToImageData).toBe("function");
+    expect(typeof pkg.imageDataToPngBlob).toBe("function");
+    expect(typeof pkg.resolveCodecPluginName).toBe("function");
     expect(typeof pkg.DusrelImageError).toBe("function");
     expect(typeof pkg.isDusrelImageError).toBe("function");
   });

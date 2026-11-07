@@ -15,6 +15,15 @@ export {
 } from "./pipeline.js";
 export { downgradeChain } from "./fallback.js";
 export {
+  blobToImageData,
+  codecPlugin,
+  imageDataPlugin,
+  imageDataToPngBlob,
+  resolveCodecPluginName,
+  type CodecPluginDefinition,
+  type ImageDataPluginDefinition,
+} from "./codec-plugin.js";
+export {
   processBatch,
   runPool,
   type BatchItemResult,
