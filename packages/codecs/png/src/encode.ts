@@ -16,7 +16,7 @@ export function resolveEncodeOptions(options: PngEncodeOptions = {}): ResolvedPn
   if (!["none", "sub", "up", "avg", "paeth", "adaptive"].includes(filter)) {
     throw new RangeError(`filter must be a PngFilter value, got ${String(filter)}.`);
   }
-  return { compression, filter, interlace: options.interlace ?? false };
+  return { compression, filter };
 }
 
 /** Loads and instantiates the encoder WASM ahead of first use. */
@@ -45,7 +45,6 @@ export async function encode(
     data.height,
     COMPRESSION_CODE[resolved.compression],
     FILTER_CODE[resolved.filter],
-    resolved.interlace,
   );
   return out.buffer as ArrayBuffer;
 }

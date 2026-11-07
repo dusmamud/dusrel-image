@@ -14,7 +14,6 @@ export interface BindgenPngGlue {
     height: number,
     compression: number,
     filter: number,
-    interlace: boolean,
   ) => Uint8Array;
   dusrel_png_decode?: (data: Uint8Array) => Uint8Array;
 }

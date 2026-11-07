@@ -8,14 +8,14 @@ export interface PngEncodeOptions {
   compression?: PngCompression;
   /** Row filter strategy. Default 'adaptive' (per-row best, like libpng). */
   filter?: PngFilter;
-  /** Adam7 interlacing. Default false. */
-  interlace?: boolean;
+  // Note: no interlace option here — the Rust png crate cannot
+  // encode Adam7. Interlace control lives in @dusrel/image-oxipng,
+  // exactly as docs/CODEC_GUIDE.md assigns it.
 }
 
 export interface ResolvedPngEncodeOptions {
   compression: PngCompression;
   filter: PngFilter;
-  interlace: boolean;
 }
 
 /** Explicit codec asset locations (CDN hosting / tests). */

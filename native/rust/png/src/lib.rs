@@ -1,8 +1,10 @@
 //! @dusrel/image-png — glue over the Rust `png` crate (our own code).
 //!
-//! encode build: dusrel_png_encode(rgba, w, h, compression, filter,
-//!   interlace) -> PNG bytes. compression: 0 fast, 1 default, 2 best.
-//!   filter: 0 none, 1 sub, 2 up, 3 avg, 4 paeth, 5 adaptive.
+//! encode build: dusrel_png_encode(rgba, w, h, compression, filter)
+//!   -> PNG bytes. compression: 0 fast, 1 balanced (default), 2 high
+//!   (the png 0.18 Compression scale). filter: 0 none, 1 sub, 2 up,
+//!   3 avg, 4 paeth, 5 adaptive. The png crate cannot encode Adam7
+//!   interlacing; that control lives in @dusrel/image-oxipng.
 //! decode build: dusrel_png_decode(bytes) -> [w u32 LE][h u32 LE][RGBA]
 //!   (always RGBA8 out; colour conversion handled here, documented in
 //!   the TS wrapper which parses the prefix).
@@ -20,7 +22,6 @@ pub fn dusrel_png_encode(
     height: u32,
     compression: u8,
     filter: u8,
-    interlace: bool,
 ) -> Result<Vec<u8>, JsValue> {
     let expected = (width as usize) * (height as usize) * 4;
     if rgba.len() != expected {
@@ -36,8 +37,8 @@ pub fn dusrel_png_encode(
         encoder.set_depth(png::BitDepth::Eight);
         encoder.set_compression(match compression {
             0 => png::Compression::Fast,
-            2 => png::Compression::Best,
-            _ => png::Compression::Default,
+            2 => png::Compression::High,
+            _ => png::Compression::Balanced,
         });
         encoder.set_filter(match filter {
             0 => png::Filter::NoFilter,
@@ -47,9 +48,6 @@ pub fn dusrel_png_encode(
             4 => png::Filter::Paeth,
             _ => png::Filter::Adaptive,
         });
-        if interlace {
-            encoder.set_interlaced(true);
-        }
         let mut writer = encoder.write_header().map_err(err)?;
         writer.write_image_data(rgba).map_err(err)?;
         writer.finish().map_err(err)?;

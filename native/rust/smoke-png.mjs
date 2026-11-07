@@ -21,7 +21,7 @@ for (let p = 0; p < W * H; p++) {
   rgba[p * 4 + 2] = (p * 53) % 256;
   rgba[p * 4 + 3] = 255;
 }
-const pngBytes = enc.dusrel_png_encode(rgba, W, H, 1, 5, false);
+const pngBytes = enc.dusrel_png_encode(rgba, W, H, 1, 5);
 const sig = Array.from(pngBytes.slice(0, 4));
 if (sig.join(",") !== "137,80,78,71") throw new Error(`smoke: bad PNG signature ${sig}`);
 const out = dec.dusrel_png_decode(pngBytes);
