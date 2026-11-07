@@ -10,7 +10,7 @@ ARG WASM_BINDGEN_VERSION=0.2.130
 ENV CODEC=${CODEC}
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends curl ca-certificates nodejs \
+  && apt-get install -y --no-install-recommends curl ca-certificates nodejs clang lld llvm \
   && rm -rf /var/lib/apt/lists/*
 
 RUN rustup target add wasm32-unknown-unknown
