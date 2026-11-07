@@ -77,6 +77,10 @@ RUN mkdir -p /build/out \
 # encode/decode roundtrip. A hollow module (codec missing) fails here
 # instead of shipping.
 COPY smoke.mjs smoke.mjs
-RUN node smoke.mjs
+# Node 18 (bundled with emsdk) treats .js as CommonJS without a
+# package.json type field, and the glue is ESM — load .mjs copies.
+RUN cp out/avif_enc.js out/avif_enc.mjs \
+  && cp out/avif_dec.js out/avif_dec.mjs \
+  && node smoke.mjs
 
-CMD ["sh", "-c", "cp /build/out/* /out/ && ls -la /out"]
+CMD ["sh", "-c", "cp /build/out/avif_enc.js /build/out/avif_enc.wasm /build/out/avif_dec.js /build/out/avif_dec.wasm /out/ && ls -la /out"]

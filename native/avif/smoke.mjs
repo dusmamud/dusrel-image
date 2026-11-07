@@ -5,7 +5,7 @@
 import { readFile } from "node:fs/promises";
 
 async function load(kind, fnName, sig) {
-  const mod = await import(`./out/avif_${kind}.js`);
+  const mod = await import(`./out/avif_${kind}.mjs`);
   const wasmBytes = await readFile(new URL(`./out/avif_${kind}.wasm`, import.meta.url));
   const instance = await mod.default({ wasmBinary: wasmBytes });
   return { instance, fn: instance.cwrap(fnName, "number", sig) };
