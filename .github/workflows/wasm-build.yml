@@ -72,3 +72,23 @@ jobs:
           name: avif-wasm
           path: wasm-out/avif
           if-no-files-found: error
+
+  rust-png:
+    name: Build Rust PNG WASM (@dusrel/image-png)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the pinned Docker image
+        run: docker build --build-arg CODEC=png -t dusrel/rust-png native/rust
+      - name: Run the build and collect artifacts
+        run: |
+          mkdir -p wasm-out/png
+          docker run --rm -v "$PWD/wasm-out/png:/out" dusrel/rust-png
+          ls -la wasm-out/png
+      - name: Upload PNG artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: png-wasm
+          path: wasm-out/png
+          if-no-files-found: error

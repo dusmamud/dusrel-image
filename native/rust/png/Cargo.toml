@@ -1,0 +1,20 @@
+[package]
+name = "dusrel-png"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Rust PNG crate compiled to WASM for @dusrel/image-png"
+
+[lib]
+crate-type = ["cdylib"]
+
+# Two builds from one crate (feature-gated), mirroring the C codecs'
+# separate enc/dec modules: --features encode -> png_enc, decode -> png_dec.
+[features]
+default = []
+encode = []
+decode = []
+
+[dependencies]
+wasm-bindgen = "=0.2.130"
+png = "=0.18.1"
