@@ -7,4 +7,4 @@
  * for this package lives in docs/PRD.md, docs/TRD.md and this package's
  * README.md.
  */
-export const PACKAGE_NAME = '@dusrel/image-vue' as const;
+export const PACKAGE_NAME = "@dusrel/image-vue" as const;

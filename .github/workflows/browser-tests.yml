@@ -1,0 +1,30 @@
+name: Browser tests
+
+on:
+  pull_request:
+    paths:
+      - 'packages/**'
+      - 'tests/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  playwright:
+    name: Playwright (Chromium, Firefox, WebKit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Run browser smoke tests
+        run: pnpm exec playwright test
+      - name: Real-browser suites land with the Phase 1 test corpus (docs/TESTING.md)
+        run: echo "Smoke harness green. Full codec/pipeline browser suites arrive in Phase 1."

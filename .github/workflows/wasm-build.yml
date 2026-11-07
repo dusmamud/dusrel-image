@@ -1,0 +1,19 @@
+name: WASM build
+
+# Scaffold: becomes a real Dockerised codec build in Phase 3 (docs/WASM_BUILD.md).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  wasm:
+    name: WASM toolchain check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show planned native layout
+        run: ls -la native && cat native/README.md
+      - name: Docker is available for the pinned codec builds
+        run: docker --version

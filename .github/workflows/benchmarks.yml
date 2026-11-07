@@ -1,0 +1,29 @@
+name: Benchmarks
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  bench:
+    name: Bundle budgets snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Record current bundle sizes (the 100-image corpus benchmark arrives in Phase 1)
+        run: pnpm size | tee benchmark-sizes.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-sizes
+          path: benchmark-sizes.txt

@@ -1,0 +1,25 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'apps/docs-site/**'
+      - 'README.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    name: Docs presence check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Required docs exist (the docs site build arrives with apps/docs-site)
+        run: |
+          for f in docs/PRD.md docs/TRD.md docs/ARCHITECTURE.md docs/API_DESIGN.md docs/RELEASE.md; do
+            test -f "$f" && echo "ok: $f" || (echo "missing: $f" && exit 1)
+          done
