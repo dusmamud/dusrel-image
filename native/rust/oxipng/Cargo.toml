@@ -15,4 +15,4 @@ crate-type = ["cdylib"]
 # build is single-threaded (the family default, ADR-0006) and uses
 # the libdeflater DEFLATE engine.
 wasm-bindgen = "=0.2.130"
-oxipng = { version = "=10.2.1", default-features = false }
+oxipng = { version = "=10.2.1", default-features = false, features = ["freestanding"] }
