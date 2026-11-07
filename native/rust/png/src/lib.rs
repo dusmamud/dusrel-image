@@ -61,7 +61,12 @@ pub fn dusrel_png_decode(data: &[u8]) -> Result<Vec<u8>, JsValue> {
     let mut decoder = png::Decoder::new(std::io::Cursor::new(data));
     decoder.set_transformations(png::Transformations::normalize_to_color8());
     let mut reader = decoder.read_info().map_err(err)?;
-    let mut buf = vec![0; reader.output_buffer_size()];
+    // png 0.18 returns Option<usize> here; with our fixed RGBA8
+    // transformations the size is always known. Error, never guess.
+    let out_size = reader
+        .output_buffer_size()
+        .ok_or_else(|| err("cannot determine decoded buffer size"))?;
+    let mut buf = vec![0; out_size];
     let info = reader.next_frame(&mut buf).map_err(err)?;
     let pixels = &buf[..info.buffer_size()];
     let (w, h) = (info.width as usize, info.height as usize);
