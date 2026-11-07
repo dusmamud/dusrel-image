@@ -12,6 +12,10 @@ ARG LIBAOM_VERSION=v3.12.1
 ARG LIBAVIF_VERSION=v1.4.2
 WORKDIR /build
 
+# libavif 1.4 locates its codecs through pkg-config; the emsdk image
+# does not ship it.
+RUN apt-get update   && apt-get install -y --no-install-recommends pkg-config   && rm -rf /var/lib/apt/lists/*
+
 RUN git clone --depth 1 --branch ${LIBAOM_VERSION} https://aomedia.googlesource.com/aom aom \
   && git -C aom rev-parse HEAD
 
@@ -32,6 +36,7 @@ RUN git clone --depth 1 --branch ${LIBAVIF_VERSION} https://github.com/AOMediaCo
 
 COPY wrapper/ wrapper/
 
+ENV PKG_CONFIG_PATH=/build/prefix/lib/pkgconfig
 RUN emcmake cmake -S libavif -B libavif-build \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_PREFIX_PATH=/build/prefix \
