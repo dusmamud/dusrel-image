@@ -1,10 +1,24 @@
 /**
  * @dusrel/image-adjust
  *
- * Brightness, contrast, saturation, sharpness, blur and filters.
- *
- * Status: scaffold only — no functionality yet. The locked specification
- * for this package lives in docs/PRD.md, docs/TRD.md and this package's
- * README.md.
+ * Colour and tone adjustments for the @dusrel/image family, on the
+ * structural PixelData every feature package shares: a one-pass
+ * point pipeline (exposure, brightness, contrast, gamma,
+ * hue-rotate, saturation, grayscale, sepia, invert — in that
+ * documented order) plus convolution sharpening and fast box /
+ * gaussian-approximate blurs. Pure functions: they run anywhere,
+ * and slot into @dusrel/image's imageDataPlugin unchanged.
  */
-export const PACKAGE_NAME = "@dusrel/image-adjust" as const;
+export {
+  adjust,
+  brightness,
+  contrast,
+  grayscale,
+  invert,
+  resolveAdjustOptions,
+  saturation,
+  sepia,
+  type ResolvedAdjustOptions,
+} from "./adjust.js";
+export { boxBlur, convolve3x3, gaussianBlur, sharpen } from "./convolve.js";
+export type { AdjustOptions, PixelData } from "./types.js";
