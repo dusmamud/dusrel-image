@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>@dusrel/image — CDN example</title>
+    <!-- No install, no build step: import maps point straight at
+         the CDN. Pin exact versions in production. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@dusrel/image": "https://cdn.jsdelivr.net/npm/@dusrel/image@0.1.0/dist/index.js",
+          "@dusrel/image-core": "https://cdn.jsdelivr.net/npm/@dusrel/image-core@0.1.0/dist/index.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>CDN example</h1>
+    <input type="file" id="file" accept="image/*" />
+    <p id="out">Pick an image to compress it to a 150 KB target as WebP.</p>
+    <img id="img" style="max-width: 100%" alt="" />
+    <script type="module">
+      import { processImage } from "@dusrel/image";
+
+      const input = document.getElementById("file");
+      input.addEventListener("change", async () => {
+        const file = input.files[0];
+        if (!file) return;
+        // targetSize: the engine searches quality for you and
+        // reports honestly when the budget can't be met.
+        const result = await processImage(file, {
+          format: "image/webp",
+          targetSize: 150_000,
+        });
+        document.getElementById("img").src = URL.createObjectURL(result.blob);
+        document.getElementById("out").textContent =
+          `${file.size} → ${result.blob.size} bytes · target met: ${result.targetSizeMet}`;
+      });
+    </script>
+  </body>
+</html>

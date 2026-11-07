@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>@dusrel/image — vanilla example</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "@dusrel/image": "https://cdn.jsdelivr.net/npm/@dusrel/image@0.1.0/dist/index.js",
+          "@dusrel/image-core": "https://cdn.jsdelivr.net/npm/@dusrel/image-core@0.1.0/dist/index.js",
+          "@dusrel/image-adjust": "https://cdn.jsdelivr.net/npm/@dusrel/image-adjust@0.1.0/dist/index.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Vanilla example</h1>
+    <input type="file" id="file" accept="image/*" />
+    <p id="out">Pick an image: it will be resized to max 1200px, brightened slightly, and encoded as WebP.</p>
+    <img id="img" style="max-width: 100%" alt="" />
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

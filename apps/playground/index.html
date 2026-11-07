@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@dusrel/image playground</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@dusrel/image": "../../packages/image/dist/index.js",
+          "@dusrel/image-core": "../../packages/core/dist/index.js",
+          "@dusrel/image-adjust": "../../packages/features/adjust/dist/index.js",
+          "@dusrel/image-watermark": "../../packages/features/watermark/dist/index.js",
+          "@dusrel/image-metadata": "../../packages/features/metadata/dist/index.js",
+          "@dusrel/image-crop/element": "../../packages/features/crop/dist/element.js",
+          "@dusrel/image-avif": "../../packages/codecs/avif/dist/index.js",
+          "@dusrel/image-webp": "../../packages/codecs/webp/dist/index.js",
+          "@dusrel/image-jpeg": "../../packages/codecs/jpeg/dist/index.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>@dusrel/image playground</h1>
+      <p>Every feature of the family, live in your browser. Nothing is uploaded — all processing is client-side.</p>
+    </header>
+
+    <main>
+      <section class="card" id="drop">
+        <h2>1 · Image</h2>
+        <input type="file" id="file" accept="image/*" />
+        <p class="hint">…or drop an image anywhere on this page.</p>
+        <div id="stage" hidden>
+          <dusrel-crop id="cropper" style="width: 100%; height: 380px"></dusrel-crop>
+          <label><input type="checkbox" id="useCrop" checked /> Apply crop</label>
+          <label>
+            Aspect
+            <select id="aspect">
+              <option value="">free</option>
+              <option value="16/9">16/9</option>
+              <option value="4/3">4/3</option>
+              <option value="1/1">1/1</option>
+            </select>
+          </label>
+          <p class="hint">Drag to move · handles resize · arrows move by natural pixels (Shift = ×10, Alt = resize)</p>
+        </div>
+        <h3>Metadata in the original file</h3>
+        <pre id="metaOut">Pick an image to inspect its EXIF / XMP / ICC metadata.</pre>
+      </section>
+
+      <section class="card">
+        <h2>2 · Processing</h2>
+        <div class="grid">
+          <label>
+            Format
+            <select id="format">
+              <option value="image/webp">WebP (canvas)</option>
+              <option value="image/jpeg">JPEG (canvas)</option>
+              <option value="image/png">PNG (canvas)</option>
+              <option value="wasm-webp">WebP (WASM codec)</option>
+              <option value="wasm-jpeg">JPEG · MozJPEG (WASM)</option>
+              <option value="wasm-avif">AVIF (WASM)</option>
+            </select>
+          </label>
+          <label>Quality <input type="range" id="quality" min="5" max="100" value="80" /> <span id="qualityVal">80</span></label>
+          <label>Max width (px, 0 = original) <input type="number" id="maxWidth" min="0" value="0" /></label>
+          <label>Brightness <input type="range" id="brightness" min="-50" max="50" value="0" /></label>
+          <label>Contrast <input type="range" id="contrast" min="-50" max="50" value="0" /></label>
+          <label>Saturation <input type="range" id="saturation" min="-100" max="100" value="0" /></label>
+          <label>Watermark text <input type="text" id="watermark" placeholder="© your name" /></label>
+        </div>
+        <button id="process" disabled>Process image</button>
+        <progress id="progress" max="1" value="0" hidden></progress>
+        <div id="result" hidden>
+          <h3>Result</h3>
+          <img id="outImg" alt="Processed output" />
+          <p id="summary"></p>
+          <a id="download" download="dusrel-output">Download result</a>
+          <h3>Process report</h3>
+          <pre id="reportOut"></pre>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>3 · Batch</h2>
+        <input type="file" id="batchFiles" accept="image/*" multiple />
+        <button id="runBatch" disabled>Process all to WebP (quality 80)</button>
+        <progress id="batchProgress" max="1" value="0" hidden></progress>
+        <ul id="batchOut"></ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>Built on the workspace packages via an import map to their <code>dist/</code> builds. Run <code>pnpm build</code> at the repo root, serve the repo root statically, and open <code>/apps/playground/</code>.</p>
+    </footer>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

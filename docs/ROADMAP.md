@@ -44,6 +44,21 @@
   `-adjust`, `-metadata` (EXIF read/preserve), `-watermark`, `-batch`
   (worker pool), playground with all features, examples for each framework
 
+> Status: **complete (2026-11-08)** — all six feature packages
+> implemented and verified in real browsers on CI (Chromium,
+> Firefox, WebKit), 135 unit tests repo-wide: `-transform`
+> (4d82f8b), `-adjust` (a1d2aa7), `-metadata` (6ee62cd), `-watermark`
+> (25444b7), `-batch` (b1bf677), `-crop` (e3ac046). The playground
+> (`apps/playground`) wires every feature together — crop
+> component, metadata inspector, pipeline with adjust/watermark
+> plugins, canvas + WASM codec formats, batch demo — and
+> `examples/` carries vanilla, React, Vue, Next, Nuxt and CDN
+> mini-examples. Three real bugs were caught by the browser
+> suite during this phase and fixed: structural PixelData
+> rejected by canvas putImageData, rotate bounds clipping
+> (round → ceil), and Chromium hanging on module workers from
+> blob URLs (the batch pool gained a caller-chosen worker type).
+
 ## Phase 4 — Framework wrappers & docs site
 - `@dusrel/image-react`, `-vue`, `-svelte`; docs site (VitePress) with
   TypeDoc API reference; CDN usage example
