@@ -1,0 +1,36 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [
+    [
+      "@dusrel/image",
+      "@dusrel/image-core",
+      "@dusrel/image-jpeg",
+      "@dusrel/image-webp",
+      "@dusrel/image-avif",
+      "@dusrel/image-png",
+      "@dusrel/image-oxipng",
+      "@dusrel/image-quantize",
+      "@dusrel/image-resize",
+      "@dusrel/image-jxl",
+      "@dusrel/image-qoi",
+      "@dusrel/image-crop",
+      "@dusrel/image-transform",
+      "@dusrel/image-adjust",
+      "@dusrel/image-metadata",
+      "@dusrel/image-watermark",
+      "@dusrel/image-batch",
+      "@dusrel/image-gif",
+      "@dusrel/image-svg",
+      "@dusrel/image-react",
+      "@dusrel/image-vue",
+      "@dusrel/image-svelte"
+    ]
+  ],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": []
+}

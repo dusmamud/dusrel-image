@@ -1,0 +1,35 @@
+{
+  "name": "@dusrel/image",
+  "version": "0.0.0",
+  "description": "Main package: easy-mode single call and the fluent pro pipeline composing core, codecs and features.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dusmamud/dusrel-image.git",
+    "directory": "packages/image"
+  },
+  "dependencies": {
+    "@dusrel/image-core": "workspace:*"
+  }
+}

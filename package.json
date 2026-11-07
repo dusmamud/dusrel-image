@@ -1,0 +1,47 @@
+{
+  "name": "dusrel-image",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Monorepo for the @dusrel/image-* family \u2014 tiny, no-backend, client-side image processing for the browser.",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "test": "vitest run --passWithNoTests",
+    "lint": "oxlint .",
+    "format": "oxfmt --check .",
+    "size": "size-limit",
+    "check:packages": "publint --strict ./packages/core && attw --pack ./packages/core --format table"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.0",
+    "@changesets/cli": "^2.29.0",
+    "@size-limit/preset-small-lib": "^11.0.0",
+    "lefthook": "^1.13.0",
+    "oxfmt": "^0.16.0",
+    "oxlint": "^1.0.0",
+    "publint": "^0.3.0",
+    "size-limit": "^11.0.0",
+    "tsdown": "^0.16.0",
+    "turbo": "^2.5.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  },
+  "size-limit": [
+    {
+      "name": "@dusrel/image-core",
+      "path": "packages/core/dist/index.js",
+      "limit": "10 KB"
+    },
+    {
+      "name": "@dusrel/image",
+      "path": "packages/image/dist/index.js",
+      "limit": "15 KB"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+pre-commit:
+  commands:
+    oxlint:
+      run: pnpm exec oxlint {staged_files}
+      stage_fixed: false

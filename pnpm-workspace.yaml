@@ -1,0 +1,6 @@
+packages:
+  - 'packages/*'
+  - 'packages/codecs/*'
+  - 'packages/features/*'
+  - 'packages/frameworks/*'
+  - 'apps/*'

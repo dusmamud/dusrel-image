@@ -1,0 +1,39 @@
+{
+  "name": "@dusrel/image-svelte",
+  "version": "0.0.0",
+  "description": "Thin Svelte wrapper over @dusrel/image and @dusrel/image-crop.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dusmamud/dusrel-image.git",
+    "directory": "packages/frameworks/svelte"
+  },
+  "dependencies": {
+    "@dusrel/image": "workspace:*",
+    "@dusrel/image-crop": "workspace:*"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  }
+}
