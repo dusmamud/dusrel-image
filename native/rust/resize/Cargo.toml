@@ -1,0 +1,16 @@
+[package]
+name = "dusrel-resize"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Dusrel glue around the resize crate for @dusrel/image-resize."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# Exact pins, same discipline as the other codecs. rgb must match
+# the major/minor resize 0.8.9 builds against (its pixel type).
+wasm-bindgen = "=0.2.130"
+resize = "=0.8.9"
+rgb = { version = "=0.8.53", default-features = false }

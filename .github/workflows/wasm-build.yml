@@ -112,3 +112,23 @@ jobs:
           name: oxipng-wasm
           path: wasm-out/oxipng
           if-no-files-found: error
+
+  rust-resize:
+    name: Build Rust Resize WASM (@dusrel/image-resize)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the pinned Docker image
+        run: docker build --build-arg CODEC=resize -t dusrel/rust-resize native/rust
+      - name: Run the build and collect artifacts
+        run: |
+          mkdir -p wasm-out/resize
+          docker run --rm -v "$PWD/wasm-out/resize:/out" dusrel/rust-resize
+          ls -la wasm-out/resize
+      - name: Upload Resize artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: resize-wasm
+          path: wasm-out/resize
+          if-no-files-found: error

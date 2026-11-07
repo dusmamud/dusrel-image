@@ -1,10 +1,13 @@
 /**
  * @dusrel/image-resize
  *
- * High-quality resizing (Rust resize/hqx/magic-kernel, WASM).
- *
- * Status: scaffold only — no functionality yet. The locked specification
- * for this package lives in docs/PRD.md, docs/TRD.md and this package's
- * README.md.
+ * High-quality image resampling via the Rust `resize` crate (WASM,
+ * lazy-loaded) — the same engine family Squoosh/jSquash use, with
+ * Lanczos3, Mitchell, Catmull-Rom, Triangle, B-spline, Gaussian
+ * and Nearest filters and correct premultiplied-alpha handling.
+ * The Canvas fast path in @dusrel/image-core stays the default;
+ * this package is the quality path developers opt into.
  */
-export const PACKAGE_NAME = "@dusrel/image-resize" as const;
+export { init, resize, resolveOptions } from "./resize.js";
+export { setCodecAssets } from "./module.js";
+export type { CodecAssets, ResizeFilter, ResizeOptions, ResolvedResizeOptions } from "./types.js";
