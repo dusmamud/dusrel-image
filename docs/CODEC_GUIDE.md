@@ -35,11 +35,13 @@ re-measured at build time.
 - Canvas `quality` does not apply to PNG; lossless PNG of photos stays large —
   guide users to quantize or WebP/AVIF.
 
-## Quantize — `@dusrel/image-quantize` (libimagequant, ~165 KB WASM)
+## Quantize — `@dusrel/image-quantize` (permissive Rust quantizer, WASM)
 - Lossy PNG by palette reduction: max colours 2..256, dithering level.
 - Expectation: ~75% median saving on PNG at q75 settings. Use only for PNG
   output (see WebP note above).
-- Licence review required before release (see THIRD_PARTY_LICENSES.md).
+- Engine decided 2026-11-07: a permissive Rust quantizer. libimagequant was
+  dropped on licence grounds (GPL-3.0-or-later) so this package stays MIT
+  (see THIRD_PARTY_LICENSES.md).
 
 ## Resize — `@dusrel/image-resize` (Rust resize / hqx / magic-kernel)
 - Algorithms: Lanczos3 (default for downscale), Mitchell, Catmull-Rom,
@@ -52,5 +54,6 @@ re-measured at build time.
   support is still limited — ship behind an "experimental" label.
 - `@dusrel/image-qoi`: niche, near-zero cost, optional.
 - GIF (`@dusrel/image-gif`) and SVG (`@dusrel/image-svg`): optimisers, not
-  pixel codecs; GIF engine choice is blocked on a licence decision
-  (THIRD_PARTY_LICENSES.md).
+  pixel codecs. GIF engine decided 2026-11-07: a permissive Rust `gif`-crate
+  based optimiser/encoder; gifsicle was dropped on licence grounds
+  (GPL-2.0-only) so the package stays MIT (THIRD_PARTY_LICENSES.md).

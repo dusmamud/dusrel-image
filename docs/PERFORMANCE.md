@@ -23,10 +23,10 @@ dusrel-image will ship:
 | Format | Engine | Median reduction |
 | --- | --- | --- |
 | JPEG | MozJPEG | ~53% |
-| PNG (lossy) | imagequant + PNG | ~75% |
+| PNG (lossy) | quantizer + PNG (reference figure measured with imagequant; the shipped permissive quantizer is benchmarked in Phase 3) | ~75% |
 | WebP | libwebp (re-encode) | ~17% |
 | AVIF | libavif (speed 6 in that study) | ~59% |
-| GIF | gifsicle -O3 lossy | ~75% |
+| GIF | GIF optimiser, lossy (reference figure measured with gifsicle -O3; the shipped Rust `gif`-crate engine is benchmarked in Phase 3) | ~75% |
 | SVG | SVGO multipass | ~42% |
 
 Note: dusrel-image ships AVIF at default speed 9 (see CODEC_GUIDE.md), so its

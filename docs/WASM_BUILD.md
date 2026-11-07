@@ -6,11 +6,12 @@ Squoosh approach).
 
 ## Toolchains
 
-- **C/C++ codecs** (MozJPEG, libwebp, libavif+libaom, libjxl, libimagequant):
+- **C/C++ codecs** (MozJPEG, libwebp, libavif+libaom, libjxl):
   Emscripten SDK, pinned version per codec, driven by the build scripts in
   `native/`. Output settings: ES6 modules, modularised, no dynamic execution
   (CSP-safe), targets `web,worker`.
-- **Rust codecs** (PNG crate, OxiPNG, resize/hqx/magic-kernel, QOI):
+- **Rust codecs** (PNG crate, OxiPNG, resize/hqx/magic-kernel, QOI, the
+  permissive quantizer and the `gif`-crate based GIF engine):
   Rust toolchain + `wasm-pack`, pinned in the Rust Docker image.
 - Threaded variants (where upstream supports them, e.g. AVIF) are built as
   separate `*_mt` artifacts and are opt-in at runtime — the default artifacts

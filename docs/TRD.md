@@ -15,7 +15,8 @@ Two layers, mirroring jSquash's model (ADR-0001):
   exactly in jSquash's spirit: separately installable, encode and decode as
   separate entries, ESM-only, lazy-loaded WASM, worker-ready.
   Engines: MozJPEG, libwebp, libavif+libaom, Rust PNG crate, OxiPNG,
-  libimagequant, resize/hqx/magic-kernel, libjxl (experimental), QOI.
+  a permissive Rust quantizer, resize/hqx/magic-kernel,
+  libjxl (experimental), QOI.
 - **Feature sub-packages** sit on top: crop UI, transform, adjust, metadata,
   watermark, batch, gif, svg, and framework wrappers (react/vue/svelte).
 
@@ -94,7 +95,8 @@ provenance (no long-lived npm tokens).
 ## 9. Open technical risks
 
 - R1: npm scope `@dusrel` ownership unverified (day-1 action).
-- R2: libimagequant and gifsicle licence review (THIRD_PARTY_LICENSES.md).
+- R2: CLOSED (2026-11-07) — libimagequant and gifsicle dropped on licence
+  grounds; permissive replacements chosen (THIRD_PARTY_LICENSES.md).
 - R3: Safari OffscreenCanvas-in-worker flakiness — cascade must be tested on
   WebKit in CI, not assumed.
 - R4: AVIF encode time on low-end mobiles — mitigated by speed default,
