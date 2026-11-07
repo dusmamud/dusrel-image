@@ -12,7 +12,7 @@ jobs:
     name: WASM toolchain check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Show planned native layout
         run: ls -la native && cat native/README.md
       - name: Docker is available for the pinned codec builds
