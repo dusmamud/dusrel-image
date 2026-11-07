@@ -19,6 +19,7 @@ describe("public surface", () => {
     expect(typeof pkg.blobToImageData).toBe("function");
     expect(typeof pkg.imageDataToPngBlob).toBe("function");
     expect(typeof pkg.resolveCodecPluginName).toBe("function");
+    expect(typeof pkg.toImageData).toBe("function");
     expect(typeof pkg.DusrelImageError).toBe("function");
     expect(typeof pkg.isDusrelImageError).toBe("function");
   });

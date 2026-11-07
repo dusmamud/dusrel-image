@@ -49,21 +49,41 @@ export async function blobToImageData(blob: Blob): Promise<ImageData> {
   }
 }
 
+/**
+ * The structural pixel shape the feature packages use — DOM
+ * ImageData satisfies it, and so do plain objects from
+ * @dusrel/image-transform and friends. Plugin transforms may
+ * return either; the runtime normalises before touching canvas
+ * APIs, which demand a genuine ImageData instance.
+ */
+export interface PixelDataLike {
+  data: Uint8ClampedArray;
+  width: number;
+  height: number;
+}
+
+/** Wraps structural pixel data in a genuine ImageData when needed. */
+export function toImageData(data: PixelDataLike): ImageData {
+  if (typeof ImageData !== "undefined" && data instanceof ImageData) return data;
+  return new ImageData(new Uint8ClampedArray(data.data), data.width, data.height);
+}
+
 /** Encodes raw pixels as a lossless PNG Blob (the plugin interchange format). */
-export async function imageDataToPngBlob(data: ImageData): Promise<Blob> {
+export async function imageDataToPngBlob(data: PixelDataLike): Promise<Blob> {
+  const imageData = toImageData(data);
   if (typeof OffscreenCanvas !== "undefined") {
-    const canvas = new OffscreenCanvas(data.width, data.height);
+    const canvas = new OffscreenCanvas(imageData.width, imageData.height);
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("2d context unavailable for plugin encode.");
-    ctx.putImageData(data, 0, 0);
+    ctx.putImageData(imageData, 0, 0);
     return canvas.convertToBlob({ type: "image/png" });
   }
   const canvas = document.createElement("canvas");
-  canvas.width = data.width;
-  canvas.height = data.height;
+  canvas.width = imageData.width;
+  canvas.height = imageData.height;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("2d context unavailable for plugin encode.");
-  ctx.putImageData(data, 0, 0);
+  ctx.putImageData(imageData, 0, 0);
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => (blob ? resolve(blob) : reject(new Error("PNG encode for plugin step failed."))),
@@ -89,8 +109,12 @@ export interface CodecPluginDefinition<Options = unknown> {
 export interface ImageDataPluginDefinition {
   /** Step name for the report, e.g. 'resize:quality'. */
   name: string;
-  /** The transform: pixels in, pixels out (may change dimensions). */
-  transform: (data: ImageData) => Promise<ImageData> | ImageData;
+  /**
+   * The transform: pixels in, pixels out (may change dimensions).
+   * May return a genuine ImageData or any structural PixelData —
+   * the feature packages' plain-object results work as-is.
+   */
+  transform: (data: ImageData) => Promise<PixelDataLike> | PixelDataLike;
 }
 
 const MIME_PATTERN = /^image\/[a-z0-9][a-z0-9.+-]*$/i;

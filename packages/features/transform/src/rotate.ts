@@ -31,8 +31,10 @@ export function rotateArbitrary(
   const radians = (normalized * Math.PI) / 180;
   const cos = Math.abs(Math.cos(radians));
   const sin = Math.abs(Math.sin(radians));
-  const outW = Math.max(1, Math.round(pixels.width * cos + pixels.height * sin));
-  const outH = Math.max(1, Math.round(pixels.width * sin + pixels.height * cos));
+  // Ceil, not round: the output bounds must CONTAIN the rotated
+  // image — rounding 21.21 down to 21 would clip the corners.
+  const outW = Math.max(1, Math.ceil(pixels.width * cos + pixels.height * sin));
+  const outH = Math.max(1, Math.ceil(pixels.width * sin + pixels.height * cos));
 
   const src = new OffscreenCanvas(pixels.width, pixels.height);
   const srcCtx = src.getContext("2d");

@@ -20,8 +20,10 @@ export {
   imageDataPlugin,
   imageDataToPngBlob,
   resolveCodecPluginName,
+  toImageData,
   type CodecPluginDefinition,
   type ImageDataPluginDefinition,
+  type PixelDataLike,
 } from "./codec-plugin.js";
 export {
   processBatch,
