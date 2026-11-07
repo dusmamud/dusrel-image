@@ -1,10 +1,11 @@
 /**
  * @dusrel/image-webp
  *
- * libwebp codec (WASM, lazy-loaded, SIMD when available). Separate encode/decode entries.
- *
- * Status: scaffold only — no functionality yet. The locked specification
- * for this package lives in docs/PRD.md, docs/TRD.md and this package's
- * README.md.
+ * libwebp codec (WASM, lazy-loaded). Separate encode/decode entries.
+ * The WASM artifacts live in this package's `codec/` folder and are
+ * built reproducibly from webmproject/libwebp v1.6.0 (see native/webp).
  */
-export const PACKAGE_NAME = "@dusrel/image-webp" as const;
+export { encode, initEncode, resolveEncodeOptions } from "./encode.js";
+export { decode, initDecode } from "./decode.js";
+export { setCodecAssets } from "./module.js";
+export type { CodecAssets, ResolvedWebPEncodeOptions, WebPEncodeOptions } from "./types.js";

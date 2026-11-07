@@ -33,3 +33,22 @@ jobs:
           name: mozjpeg-wasm
           path: wasm-out/mozjpeg
           if-no-files-found: error
+
+  webp:
+    name: Build libwebp WASM (@dusrel/image-webp)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the pinned Docker image
+        run: docker build -t dusrel/webp native/webp
+      - name: Run the build and collect artifacts
+        run: |
+          mkdir -p wasm-out/webp
+          docker run --rm -v "$PWD/wasm-out/webp:/out" dusrel/webp
+          ls -la wasm-out/webp
+      - name: Upload libwebp artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: webp-wasm
+          path: wasm-out/webp
+          if-no-files-found: error
