@@ -148,3 +148,32 @@ test("plugin step runs inside the pipeline and is named in the report", async ({
   expect(r.width).toBe(100);
   expect(r.steps).toContain("plugin:tagger");
 });
+
+test("processBatch: bounded batch with a bad item collected as a value", async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const { __dusrelImage: pkg, __png: png } = window as unknown as {
+      __dusrelImage: typeof import("../../packages/image/src/index.js");
+      __png: Blob;
+    };
+    const garbage = new Blob([new Uint8Array([9, 9, 9])], { type: "image/png" });
+    const events: number[] = [];
+    const results = await pkg.processBatch([png, garbage, png], {
+      format: "image/webp",
+      resize: { width: 50 },
+      onBatchProgress: (e) => events.push(e.completed),
+    });
+    return {
+      statuses: results.map((x) => x.status),
+      widths: results.map((x) => (x.status === "fulfilled" ? x.result.width : -1)),
+      events,
+      errorCode: (() => {
+        const bad = results[1];
+        return bad && bad.status === "rejected" ? (bad.error as { code?: string }).code : undefined;
+      })(),
+    };
+  });
+  expect(r.statuses).toEqual(["fulfilled", "rejected", "fulfilled"]);
+  expect(r.widths).toEqual([50, -1, 50]);
+  expect(r.events).toEqual([1, 2, 3]);
+  expect(r.errorCode).toBe("decode-failed");
+});

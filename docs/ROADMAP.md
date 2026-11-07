@@ -10,6 +10,11 @@
       tsdown per package, size-limit budgets wired (empty packages)
 
 ## Phase 1 — Core & pipeline (no WASM yet)
+
+> Status: **complete (2026-11-07)** — `@dusrel/image-core` (ea07b92),
+> `@dusrel/image` (d6aa024) and the batch queue all implemented,
+> unit-tested and verified in real browsers on CI (Chromium, Firefox,
+> WebKit). Metadata strip is inherent to Canvas re-encode.
 - `@dusrel/image-core`: decode, Canvas engine, worker runtime, errors, types
 - `@dusrel/image`: easy mode + fluent pipeline, target-size strategy,
   fallback cascade, report
