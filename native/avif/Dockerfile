@@ -54,17 +54,22 @@ RUN emcmake cmake -S libavif -B libavif-build \
       -DAOM_INCLUDE_DIR=/build/prefix/include \
       -DAOM_LIBRARY=/build/prefix/lib/libaom.a \
   && emmake make -C libavif-build -j"$(nproc)" avif \
-  && find libavif-build -name "libavif.a"
+  && find libavif-build -name "*.a" 
 
 ENV EMFLAGS="-O3 -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web,worker -s ALLOW_MEMORY_GROWTH=1 -s FILESYSTEM=0 -s ASSERTIONS=0 -s EXPORTED_RUNTIME_METHODS=[\"cwrap\",\"HEAPU8\",\"HEAPU32\"]"
 
+# libavif 1.4's static artifact is libavif_internal.a, and the LOCAL
+# libyuv build adds its own archive inside the same tree — link every
+# archive from the build tree plus libaom as one group.
 RUN mkdir -p /build/out \
-  && AVIF_LIB=$(find libavif-build -name "libavif.a" | head -n 1) \
-  && echo "libavif: $AVIF_LIB" \
-  && em++ $EMFLAGS -I libavif/include wrapper/avif_enc.cpp "$AVIF_LIB" /build/prefix/lib/libaom.a \
+  && AVIF_LIBS=$(find libavif-build -name "*.a" | tr '\n' ' ') \
+  && echo "linking: $AVIF_LIBS" \
+  && em++ $EMFLAGS -I libavif/include wrapper/avif_enc.cpp \
+       -Wl,--start-group $AVIF_LIBS /build/prefix/lib/libaom.a -Wl,--end-group \
        -s EXPORTED_FUNCTIONS='["_dusrel_avif_encode","_malloc","_free"]' \
        -o /build/out/avif_enc.js \
-  && em++ $EMFLAGS -I libavif/include wrapper/avif_dec.cpp "$AVIF_LIB" /build/prefix/lib/libaom.a \
+  && em++ $EMFLAGS -I libavif/include wrapper/avif_dec.cpp \
+       -Wl,--start-group $AVIF_LIBS /build/prefix/lib/libaom.a -Wl,--end-group \
        -s EXPORTED_FUNCTIONS='["_dusrel_avif_decode","_malloc","_free"]' \
        -o /build/out/avif_dec.js \
   && ls -la /build/out
