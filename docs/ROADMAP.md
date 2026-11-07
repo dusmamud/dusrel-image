@@ -22,6 +22,19 @@
   (JPEG/WebP/PNG), metadata strip, batch queue
 
 ## Phase 2 — WASM codecs (jSquash model)
+
+> Status: **complete (2026-11-07)** — all seven packages implemented
+> and verified in real browsers on CI (Chromium, Firefox, WebKit),
+> every module gated by a functional smoke test inside its Docker
+> build and re-verified locally before commit: `-jpeg` (MozJPEG,
+> 89a6ddb), `-webp` (libwebp, 3c1f4b4), `-avif` (libaom + libavif,
+> bfaca68), `-png` (Rust png crate, e6c9d89), `-oxipng` (22b3ff1),
+> `-resize` (fbe7904), `-quantize` (quantizr, d4a1bb9). Pipeline
+> codec registration (`codecPlugin` / `imageDataPlugin` in
+> `@dusrel/image`) closed the phase (dcb0422). Tracked optimisations
+> that do NOT block the phase: MozJPEG encoder size tuning, a slim
+> dav1d-based AVIF decoder, and hqx for `-resize` (not present in
+> the resize crate; see CODEC_GUIDE).
 - `@dusrel/image-jpeg`, `-webp`, `-avif`, `-png`, `-oxipng`, `-quantize`,
   `-resize` — each separately installable and lazy-loaded
 - Docker WASM build workflow live; attribution generation live
