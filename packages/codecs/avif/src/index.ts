@@ -1,10 +1,18 @@
 /**
  * @dusrel/image-avif
  *
- * libavif + libaom codec (WASM, lazy-loaded). Default speed 9; threaded build opt-in only.
- *
- * Status: scaffold only — no functionality yet. The locked specification
- * for this package lives in docs/PRD.md, docs/TRD.md and this package's
- * README.md.
+ * libavif + libaom codec (WASM, lazy-loaded). Separate encode/decode
+ * entries. The WASM artifacts live in this package's `codec/` folder
+ * and are built reproducibly (see native/avif: libaom v3.12.1,
+ * libavif v1.4.2, emsdk 3.1.66). Single-threaded by default — the
+ * threaded encoder stays opt-in (cross-origin isolation required).
  */
-export const PACKAGE_NAME = "@dusrel/image-avif" as const;
+export { encode, initEncode, resolveEncodeOptions } from "./encode.js";
+export { decode, initDecode } from "./decode.js";
+export { setCodecAssets } from "./module.js";
+export type {
+  AvifEncodeOptions,
+  AvifPixelFormat,
+  CodecAssets,
+  ResolvedAvifEncodeOptions,
+} from "./types.js";

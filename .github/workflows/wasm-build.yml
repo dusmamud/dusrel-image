@@ -52,3 +52,23 @@ jobs:
           name: webp-wasm
           path: wasm-out/webp
           if-no-files-found: error
+
+  avif:
+    name: Build libavif WASM (@dusrel/image-avif)
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the pinned Docker image
+        run: docker build -t dusrel/avif native/avif
+      - name: Run the build and collect artifacts
+        run: |
+          mkdir -p wasm-out/avif
+          docker run --rm -v "$PWD/wasm-out/avif:/out" dusrel/avif
+          ls -la wasm-out/avif
+      - name: Upload libavif artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: avif-wasm
+          path: wasm-out/avif
+          if-no-files-found: error
