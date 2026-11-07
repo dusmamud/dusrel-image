@@ -84,11 +84,7 @@ importers:
         specifier: workspace:*
         version: link:../../core
 
-  packages/features/crop:
-    dependencies:
-      '@dusrel/image-core':
-        specifier: workspace:*
-        version: link:../../core
+  packages/features/crop: {}
 
   packages/features/gif:
     dependencies:
