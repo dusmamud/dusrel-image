@@ -50,6 +50,8 @@ RUN emcmake cmake -S libavif -B libavif-build \
       -DAVIF_BUILD_APPS=OFF \
       -DAVIF_BUILD_TESTS=OFF \
       -DAVIF_BUILD_EXAMPLES=OFF \
+      -DAOM_INCLUDE_DIR=/build/prefix/include \
+      -DAOM_LIBRARY=/build/prefix/lib/libaom.a \
   && emmake make -C libavif-build -j"$(nproc)" avif \
   && find libavif-build -name "*.a" 
 
