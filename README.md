@@ -61,3 +61,4 @@ MIT for dusrel-image's own code. Third-party codecs keep their own licences
 Tip: start with `docs/PRD.md` for the product view and `docs/TRD.md` for the technical view — every major decision is recorded in `docs/adr/`.
 Note: this repo is in the planning / documentation phase and no public API is stable yet — the locked decisions in `docs/` govern all code.
 Heavy codecs download only when selected, so the default load stays tiny — the core has a hard 10 KB gzip size budget enforced in CI.
+Every sub-package shares one API shape — input, options, progress, cancellation via AbortSignal, and typed errors.
