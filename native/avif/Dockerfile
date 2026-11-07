@@ -41,9 +41,8 @@ RUN emcmake cmake -S libavif -B libavif-build \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_PREFIX_PATH=/build/prefix \
       -DBUILD_SHARED_LIBS=OFF \
-      -DAVIF_CODEC_AOM=ON \
+      -DAVIF_CODEC_AOM=SYSTEM \
       -DAVIF_LIBYUV=LOCAL \
-      -DAVIF_LOCAL_AOM=OFF \
       -DAVIF_CODEC_DAV1D=OFF \
       -DAVIF_CODEC_LIBGAV1=OFF \
       -DAVIF_CODEC_RAV1E=OFF \
@@ -51,8 +50,6 @@ RUN emcmake cmake -S libavif -B libavif-build \
       -DAVIF_BUILD_APPS=OFF \
       -DAVIF_BUILD_TESTS=OFF \
       -DAVIF_BUILD_EXAMPLES=OFF \
-      -DAOM_INCLUDE_DIR=/build/prefix/include \
-      -DAOM_LIBRARY=/build/prefix/lib/libaom.a \
   && emmake make -C libavif-build -j"$(nproc)" avif \
   && find libavif-build -name "*.a" 
 
@@ -73,5 +70,11 @@ RUN mkdir -p /build/out \
        -s EXPORTED_FUNCTIONS='["_dusrel_avif_decode","_malloc","_free"]' \
        -o /build/out/avif_dec.js \
   && ls -la /build/out
+
+# Functional gate: run the built modules in Node and prove a real
+# encode/decode roundtrip. A hollow module (codec missing) fails here
+# instead of shipping.
+COPY smoke.mjs smoke.mjs
+RUN node smoke.mjs
 
 CMD ["sh", "-c", "cp /build/out/* /out/ && ls -la /out"]
