@@ -25,10 +25,9 @@ COPY . .
 
 RUN bash "scripts/build-${CODEC}.sh"
 
-# Functional gate, same lesson as the C codecs: Node here is 18/20,
-# which treats .js glue as CommonJS — load .mjs copies.
-RUN cp "out/${CODEC}_enc.js" "out/${CODEC}_enc.mjs" \
-  && cp "out/${CODEC}_dec.js" "out/${CODEC}_dec.mjs" \
-  && node "smoke-${CODEC}.mjs"
+# Functional gate, same lesson as the C codecs: each codec ships
+# its own scripts/smoke-<codec>.sh (Node here is 18/20, which treats
+# .js glue as CommonJS — the scripts load .mjs copies).
+RUN bash "scripts/smoke-${CODEC}.sh"
 
-CMD ["sh", "-c", "cp /build/out/${CODEC}_enc.js /build/out/${CODEC}_enc.wasm /build/out/${CODEC}_dec.js /build/out/${CODEC}_dec.wasm /out/ && ls -la /out"]
+CMD ["sh", "-c", "cp /build/out/*.js /build/out/*.wasm /out/ && ls -la /out"]

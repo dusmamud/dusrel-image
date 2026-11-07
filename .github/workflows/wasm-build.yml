@@ -92,3 +92,23 @@ jobs:
           name: png-wasm
           path: wasm-out/png
           if-no-files-found: error
+
+  rust-oxipng:
+    name: Build Rust OxiPNG WASM (@dusrel/image-oxipng)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the pinned Docker image
+        run: docker build --build-arg CODEC=oxipng -t dusrel/rust-oxipng native/rust
+      - name: Run the build and collect artifacts
+        run: |
+          mkdir -p wasm-out/oxipng
+          docker run --rm -v "$PWD/wasm-out/oxipng:/out" dusrel/rust-oxipng
+          ls -la wasm-out/oxipng
+      - name: Upload OxiPNG artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: oxipng-wasm
+          path: wasm-out/oxipng
+          if-no-files-found: error
