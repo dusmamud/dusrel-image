@@ -22,6 +22,8 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Build packages (browser specs load the built bundles)
+        run: pnpm build
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium firefox webkit
       - name: Run browser smoke tests
