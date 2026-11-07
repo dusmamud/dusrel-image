@@ -14,6 +14,13 @@ export {
   type PipelineSegment,
 } from "./pipeline.js";
 export { downgradeChain } from "./fallback.js";
+export {
+  processBatch,
+  runPool,
+  type BatchItemResult,
+  type BatchOptions,
+  type BatchProgressEvent,
+} from "./batch.js";
 export type {
   FallbackPolicy,
   ImageOptions,
