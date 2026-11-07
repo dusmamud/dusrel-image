@@ -58,3 +58,4 @@ documents live in `docs/`; every major decision is recorded in `docs/adr/`.
 
 MIT for dusrel-image's own code. Third-party codecs keep their own licences
 (Apache-2.0 and others) — see `NOTICE` and `THIRD_PARTY_LICENSES.md`.
+Tip: start with `docs/PRD.md` for the product view and `docs/TRD.md` for the technical view — every major decision is recorded in `docs/adr/`.
