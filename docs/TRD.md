@@ -94,7 +94,8 @@ provenance (no long-lived npm tokens).
 
 ## 9. Open technical risks
 
-- R1: npm scope `@dusrel` ownership unverified (day-1 action).
+- R1: CLOSED (2026-11-07) — npm org `dusrel` created by Dus; `@dusrel`
+  scope ownership verified against the npm registry.
 - R2: CLOSED (2026-11-07) — libimagequant and gifsicle dropped on licence
   grounds; permissive replacements chosen (THIRD_PARTY_LICENSES.md).
 - R3: Safari OffscreenCanvas-in-worker flakiness — cascade must be tested on

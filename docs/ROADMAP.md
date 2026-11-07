@@ -3,10 +3,10 @@
 ## Phase 0 — Foundation (documentation & skeleton)
 - [x] Research (Exa cross-verified) and locked decisions (PRD/TRD/ADRs)
 - [x] Repository skeleton and all required docs
-- [ ] npm scope `@dusrel` ownership confirmed
-- [ ] CI workflows created (ci, browser-tests, wasm-build, benchmarks,
+- [x] npm scope `@dusrel` ownership confirmed (npm org `dusrel`, 2026-11-07)
+- [x] CI workflows created (ci, browser-tests, wasm-build, benchmarks,
       release, docs, codeql + Dependabot) and branch protection on
-- [ ] Root tooling: pnpm workspaces, Turborepo, TypeScript base config,
+- [x] Root tooling: pnpm workspaces, Turborepo, TypeScript base config,
       tsdown per package, size-limit budgets wired (empty packages)
 
 ## Phase 1 — Core & pipeline (no WASM yet)

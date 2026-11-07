@@ -115,11 +115,12 @@ and suffixes; full processing report.
 
 ## 8. Constraints & assumptions
 
-- npm scope `@dusrel` must be owned by Dus (npm user or org named `dusrel`)
-  before first publish — open day-1 action.
+- npm scope `@dusrel` is owned by Dus via the npm org `dusrel`
+  (created by Dus and verified against the npm registry on 2026-11-07).
 - All `@dusrel/image-*` packages version in lockstep.
-- Licences of reused codecs must be honoured; open items in
-  THIRD_PARTY_LICENSES.md must close before public release.
+- Licences of reused codecs must be honoured; the licence items in
+  THIRD_PARTY_LICENSES.md were closed on 2026-11-07 (GPL engines dropped,
+  permissive replacements chosen).
 
 ## 9. Roadmap summary
 

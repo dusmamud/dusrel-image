@@ -21,8 +21,8 @@
 
 ## Pre-release checklist
 
-- [ ] npm scope `@dusrel` ownership confirmed (user/org named `dusrel`)
-- [ ] Open licence items in THIRD_PARTY_LICENSES.md closed
+- [x] npm scope `@dusrel` ownership confirmed — npm org `dusrel`, registry-verified 2026-11-07
+- [x] Open licence items in THIRD_PARTY_LICENSES.md closed (2026-11-07)
 - [ ] Browser matrix green (Chromium/Firefox/WebKit) on the release commit
 - [ ] Benchmarks show no unexplained regression
 - [ ] Manual device pass done (TESTING.md)
