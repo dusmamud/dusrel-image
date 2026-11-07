@@ -42,6 +42,7 @@ RUN emcmake cmake -S libavif -B libavif-build \
       -DCMAKE_PREFIX_PATH=/build/prefix \
       -DBUILD_SHARED_LIBS=OFF \
       -DAVIF_CODEC_AOM=ON \
+      -DAVIF_LIBYUV=LOCAL \
       -DAVIF_LOCAL_AOM=OFF \
       -DAVIF_CODEC_DAV1D=OFF \
       -DAVIF_CODEC_LIBGAV1=OFF \
