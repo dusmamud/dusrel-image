@@ -19,6 +19,7 @@
     "../../packages/features/batch/src/index.ts",
     "../../packages/features/crop/src/index.ts",
     "../../packages/features/gif/src/index.ts",
+    "../../packages/features/svg/src/index.ts",
     "../../packages/features/crop/src/element.ts",
     "../../packages/frameworks/react/src/index.ts",
     "../../packages/frameworks/vue/src/index.ts",

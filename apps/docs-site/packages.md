@@ -36,6 +36,7 @@ ever bundled into the core.
 | `@dusrel/image-watermark` | Image + text watermarks, 9 placements and tiling |
 | `@dusrel/image-batch` | Worker-pool batch engine — retries, timeouts, pause/resume, memory caps |
 | `@dusrel/image-gif` | Animated GIF encode/decode/optimise — Rust `gif` crate (Phase 5) |
+| `@dusrel/image-svg` | SVG optimisation — SVGO browser build, multipass + ID preservation (Phase 5) |
 
 ## Frameworks
 
@@ -45,6 +46,3 @@ ever bundled into the core.
 | `@dusrel/image-vue` | Composables + `<DusrelCrop>` with v-model |
 | `@dusrel/image-svelte` | Store factories + `DusrelCrop.svelte` with `bind:crop` |
 
-## Planned (Phase 5)
-
-`@dusrel/image-svg` — see the [roadmap](/guide/roadmap).

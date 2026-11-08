@@ -30,6 +30,6 @@
     "directory": "packages/features/svg"
   },
   "dependencies": {
-    "@dusrel/image-core": "workspace:*"
+    "svgo": "4.1.0"
   }
 }

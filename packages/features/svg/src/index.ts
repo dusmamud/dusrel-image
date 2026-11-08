@@ -1,10 +1,15 @@
 /**
  * @dusrel/image-svg
  *
- * SVG optimisation via SVGO browser build.
- *
- * Status: scaffold only — no functionality yet. The locked specification
- * for this package lives in docs/PRD.md, docs/TRD.md and this package's
- * README.md.
+ * SVG optimisation via SVGO's browser build (v4): preset-default
+ * plugins, multipass on by default, ID preservation options, and
+ * a full plugin passthrough for maximum control. Synchronous —
+ * SVGO itself is synchronous.
  */
-export const PACKAGE_NAME = "@dusrel/image-svg" as const;
+export { optimizeSvg, optimizeSvgWithStats, resolveSvgOptions } from "./optimize.js";
+export type {
+  PluginConfig,
+  ResolvedSvgConfig,
+  SvgOptimizeOptions,
+  SvgOptimizeResult,
+} from "./types.js";
