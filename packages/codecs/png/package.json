@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-png",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "PNG encode/decode via the Rust PNG crate (WASM, lazy-loaded).",
   "license": "MIT",
   "type": "module",

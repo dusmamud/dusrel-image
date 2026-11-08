@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Main package: easy-mode single call and the fluent pro pipeline composing core, codecs and features.",
   "license": "MIT",
   "type": "module",

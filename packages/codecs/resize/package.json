@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-resize",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "High-quality resizing (Rust resize/hqx/magic-kernel, WASM).",
   "license": "MIT",
   "type": "module",

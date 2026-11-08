@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-transform",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Rotate, flip, background fill and perspective helpers.",
   "license": "MIT",
   "type": "module",

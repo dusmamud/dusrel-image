@@ -1,1 +1,32 @@
-{"description":"ThumbHash and BlurHash image placeholders: compact preview strings from pixels, and back.","exports":{".":{"import":"./dist/index.js","types":"./dist/index.d.ts"}},"files":["dist"],"license":"MIT","main":"./dist/index.js","module":"./dist/index.js","name":"@dusrel/image-placeholder","publishConfig":{"access":"public"},"repository":{"directory":"packages/features/placeholder","type":"git","url":"git+https://github.com/dusmamud/dusrel-image.git"},"scripts":{"build":"tsdown","typecheck":"tsc -p tsconfig.json"},"sideEffects":false,"type":"module","types":"./dist/index.d.ts","version":"0.0.0"}
+{
+  "description": "ThumbHash and BlurHash image placeholders: compact preview strings from pixels, and back.",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "name": "@dusrel/image-placeholder",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "directory": "packages/features/placeholder",
+    "type": "git",
+    "url": "git+https://github.com/dusmamud/dusrel-image.git"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "version": "1.0.0"
+}
