@@ -101,6 +101,33 @@
 - Plugin API stabilisation; HEIC decode plugin investigation;
   placeholder (blurhash-style) plugin investigation
 
+> Status: **complete (2026-11-08)** — every Phase 5 item shipped
+> and verified on GitHub (CI, CodeQL, Browser tests, Docs all
+> green, three engines): `@dusrel/image-qoi` (8010ef0, Rust qoi
+> crate, pixel-exact + hand-built RGB fixture),
+> `@dusrel/image-jxl` (0d27357, libjxl v0.11.2 against the
+> public C API; lossless needed `uses_original_profile`
+> root-caused in libjxl's encoder), `@dusrel/image-gif`
+> (b58f3cf, Rust gif crate, stacked-frame global palette),
+> `@dusrel/image-svg` (ff1f37a, SVGO wrapper; the browser spec
+> renders via `<img>` — createImageBitmap rejects SVG blobs in
+> all engines), plugin API stabilisation (01275e6, ADR-0007:
+> easy-mode plugins actually run, codecs register as output
+> formats, typed `plugin-failed` errors) and
+> `@dusrel/image-placeholder` (ed5546b, ADR-0009: ThumbHash +
+> BlurHash from spec in pure TypeScript, oracle vectors pinned
+> against the reference packages). Repo at 458 files, 204 unit
+> tests, 23 lockstep packages.
+> The HEIC investigation is complete (ADR-0008): libheif +
+> libde265 are LGPL-3.0 and no permissive HEVC decoder exists,
+> so `@dusrel/image-heic` ships only if that licence exception
+> is accepted (options A/B/C in the ADR; recommendation A —
+> decode-only, native-first). The placeholder investigation
+> became a shipped package rather than a spike because both
+> algorithms are MIT (ADR-0009).
+> Open: the ADR-0008 decision; a first npm release via
+> Changesets (org `dusrel` exists, nothing published yet).
+
 ## Later / explicitly not v1
 - Client-side AI plugins (e.g. background removal with on-device models) —
   optional plugins only, never a backend dependency
