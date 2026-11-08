@@ -70,11 +70,11 @@ RUN mkdir -p /build/out \
   && echo "dec core: $DEC_CORE | brotli-dec: $BDEC" \
   && em++ $EMFLAGS -I libjxl/lib/include -I libjxl-build/lib/include wrapper/jxl_enc.cpp \
        -Wl,--start-group $JXL_COMBINED $BENC $SUPPORT -Wl,--end-group \
-       -s EXPORTED_FUNCTIONS='["_dusrel_jxl_encode","_malloc","_free"]' \
+       -s EXPORTED_FUNCTIONS='["_dusrel_jxl_encode","_dusrel_jxl_last_step","_malloc","_free"]' \
        -o /build/out/jxl_enc.js \
   && em++ $EMFLAGS -I libjxl/lib/include -I libjxl-build/lib/include wrapper/jxl_dec.cpp \
        -Wl,--start-group $DEC_CORE $BDEC $SUPPORT -Wl,--end-group \
-       -s EXPORTED_FUNCTIONS='["_dusrel_jxl_decode","_malloc","_free"]' \
+       -s EXPORTED_FUNCTIONS='["_dusrel_jxl_decode","_dusrel_jxl_last_step","_malloc","_free"]' \
        -o /build/out/jxl_dec.js \
   && ls -la /build/out
 

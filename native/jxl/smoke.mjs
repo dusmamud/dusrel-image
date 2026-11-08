@@ -46,7 +46,9 @@ function encode(pixels, quality, effort, lossless) {
   enc.HEAPU8.set(pixels, inPtr);
   const sizePtr = enc._malloc(4);
   const outPtr = encFn(inPtr, W, H, quality, effort, lossless, sizePtr);
-  if (!outPtr) throw new Error("smoke: encode returned null");
+  if (!outPtr) {
+    throw new Error(`smoke: encode returned null (glue step ${enc._dusrel_jxl_last_step()})`);
+  }
   const size = enc.HEAPU32[sizePtr >> 2];
   const bytes = enc.HEAPU8.slice(outPtr, outPtr + size);
   enc._free(inPtr);
@@ -61,7 +63,9 @@ function decode(bytes) {
   const wPtr = dec._malloc(4);
   const hPtr = dec._malloc(4);
   const outPtr = decFn(inPtr, bytes.length, wPtr, hPtr);
-  if (!outPtr) throw new Error("smoke: decode returned null");
+  if (!outPtr) {
+    throw new Error(`smoke: decode returned null (glue step ${dec._dusrel_jxl_last_step()})`);
+  }
   const w = dec.HEAPU32[wPtr >> 2];
   const h = dec.HEAPU32[hPtr >> 2];
   const pixels = dec.HEAPU8.slice(outPtr, outPtr + w * h * 4);
