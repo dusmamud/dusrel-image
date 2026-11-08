@@ -133,6 +133,26 @@ jobs:
           path: wasm-out/resize
           if-no-files-found: error
 
+  rust-qoi:
+    name: Build Rust QOI WASM (@dusrel/image-qoi)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the pinned Docker image
+        run: docker build --build-arg CODEC=qoi -t dusrel/rust-qoi native/rust
+      - name: Run the build and collect artifacts
+        run: |
+          mkdir -p wasm-out/qoi
+          docker run --rm -v "$PWD/wasm-out/qoi:/out" dusrel/rust-qoi
+          ls -la wasm-out/qoi
+      - name: Upload QOI artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: qoi-wasm
+          path: wasm-out/qoi
+          if-no-files-found: error
+
   rust-quantize:
     name: Build Rust Quantize WASM (@dusrel/image-quantize)
     runs-on: ubuntu-latest

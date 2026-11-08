@@ -1,0 +1,20 @@
+[package]
+name = "dusrel-qoi"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Rust qoi crate compiled to WASM for @dusrel/image-qoi"
+
+[lib]
+crate-type = ["cdylib"]
+
+# Two builds from one crate (feature-gated), mirroring the C codecs'
+# separate enc/dec modules: --features encode -> qoi_enc, decode -> qoi_dec.
+[features]
+default = []
+encode = []
+decode = []
+
+[dependencies]
+wasm-bindgen = "=0.2.130"
+qoi = "=0.4.1"
