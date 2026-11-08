@@ -82,7 +82,11 @@ RUN mkdir -p /build/out \
 # part of the shipped artifacts: it is only linked here so the
 # smoke gate can isolate encoder failures, and the CMD below
 # never copies it to /out.
-RUN em++ $EMFLAGS -I libjxl/lib/include -I libjxl-build/lib/include wrapper/jxl_probe.cpp \
+RUN JXL_COMBINED="$(find libjxl-build -name 'libjxl.a')" \
+  && SUPPORT="$(find libjxl-build \( -name 'libhwy.a' -o -name 'libskcms.a' -o -name 'libjxl_threads.a' -o -name 'libjxl_cms.a' -o -name 'libbrotlicommon*.a' \) | tr '\n' ' ')" \
+  && BENC="$(find libjxl-build -name 'libbrotlienc*.a' | tr '\n' ' ')" \
+  && BDEC="$(find libjxl-build -name 'libbrotlidec*.a' | tr '\n' ' ')" \
+  && em++ $EMFLAGS -I libjxl/lib/include -I libjxl-build/lib/include wrapper/jxl_probe.cpp \
        -Wl,--start-group $JXL_COMBINED $BENC $BDEC $SUPPORT -Wl,--end-group \
        -s EXPORTED_FUNCTIONS='["_dusrel_jxl_probe_encode","_malloc","_free"]' \
        -o /build/out/jxl_probe.js \
