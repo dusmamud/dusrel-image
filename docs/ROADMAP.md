@@ -63,6 +63,39 @@
 - `@dusrel/image-react`, `-vue`, `-svelte`; docs site (VitePress) with
   TypeDoc API reference; CDN usage example
 
+> Status: **complete (2026-11-08)** — all three framework wrappers
+> implemented inside this monorepo (`packages/frameworks/`) and the
+> docs site built in `apps/docs-site`; 152 unit tests repo-wide,
+> every suite green on GitHub (CI, CodeQL, Browser tests, Docs):
+> `-react` (55151a9, fix ddb6be0), `-vue` (55405c2), `-svelte`
+> (3e56ff4, fixes 30f0fb4 + 6b8c960), docs site (a010559).
+> All three wrappers share one design: a framework-free,
+> subscribable processor store (status/step/progress/result/error,
+> composed AbortSignals, supersede/abort/reset, injectable process
+> functions) bridged idiomatically per framework — React hooks
+> (`useSyncExternalStore`) + a forwardRef crop component, Vue
+> composables (`shallowRef` + computeds) + a v-model crop
+> component, Svelte store factories (writable + derived) + a runes
+> crop component shipped as `.svelte` source with `bind:crop`.
+> Each crop wrapper registers `<dusrel-crop>` lazily (SSR-safe
+> imports) and each package is proven by a real mounted fixture
+> app in Chromium, Firefox and WebKit. Browser verification caught
+> three real bugs, all fixed: the React fixture needed a
+> `NODE_ENV` define (React's CJS entry reads `process.env`); the
+> Svelte fixture resolved `svelte` to its server entry, where
+> `mount` is an unavailable stub (fixture builds need
+> `platform: "browser"`); and Safari never upgrades
+> template-parsed custom elements, so the Svelte component
+> creates its element imperatively via `document.createElement`.
+> The docs site is VitePress: guide pages `@include` the `docs/`
+> sources (single source of truth), TypeDoc generates the API
+> reference for all 19 public entry points into `/api/`, and the
+> Docs workflow now builds the full site as a CI gate. The CDN
+> usage example shipped with Phase 3 (`examples/cdn`).
+> Next: Phase 5 — experimental packages (jxl, qoi, gif, svg),
+> plugin API stabilisation, HEIC decode and placeholder
+> investigations.
+
 ## Phase 5 — Experimental & plugins
 - `@dusrel/image-jxl`, `-qoi`, `-gif`, `-svg` (subject to licence decisions)
 - Plugin API stabilisation; HEIC decode plugin investigation;
