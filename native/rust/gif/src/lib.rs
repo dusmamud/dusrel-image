@@ -10,9 +10,10 @@
 //!   repeat:      -1 = no loop block (play once), 0 = loop forever,
 //!                n > 0 = loop n more times (gif.js semantics).
 //!   speed:       1..30 colour-quantisation sampling (1 = best).
-//!   global_palette: share the first frame's palette across all
-//!                frames (nearest-colour mapping) instead of a
-//!                local palette per frame.
+//!   global_palette: build ONE palette sampled from all frames
+//!                (the frames are quantised as a single stacked
+//!                image) and share it, instead of a local palette
+//!                per frame - the classic multi-frame size win.
 //!
 //! dusrel_gif_decode(bytes) -> framed RGBA:
 //!   [width u32 LE][height u32 LE][frame count u32 LE]
@@ -58,53 +59,56 @@ pub fn dusrel_gif_encode(
     }
     let (w16, h16) = (width as u16, height as u16);
 
-    // Quantise every frame first: the global-palette mode needs
-    // frame 0's palette before any frame can be written.
-    let mut quantized: Vec<Frame<'static>> = Vec::with_capacity(frame_count);
-    for i in 0..frame_count {
-        let mut px = frames_rgba[i * frame_len..(i + 1) * frame_len].to_vec();
-        let mut frame = Frame::from_rgba_speed(w16, h16, &mut px, speed);
-        frame.delay = u16::from_le_bytes([delays_cs[i * 2], delays_cs[i * 2 + 1]]);
-        frame.dispose = DisposalMethod::Keep;
-        quantized.push(frame);
-    }
-
+    // Quantise. Per-frame mode gives each frame its own palette.
+    // Global mode quantises all frames as ONE stacked image so
+    // the shared palette is learned from every frame's colours
+    // (a palette learned from frame 0 alone could never contain
+    // frame 1's colours - the first smoke run proved exactly
+    // that), then slices the stacked indices back into frames.
     let mut out: Vec<u8> = Vec::new();
     if global_palette && frame_count > 1 {
-        let palette = quantized[0]
+        let stacked_height = height * frame_count as u32;
+        if stacked_height > 65535 {
+            return Err(JsValue::from_str(
+                "global palette mode needs height * frames <= 65535; use per-frame palettes",
+            ));
+        }
+        let mut stacked = frames_rgba.to_vec();
+        let mut combined =
+            Frame::from_rgba_speed(w16, stacked_height as u16, &mut stacked, speed);
+        let palette = combined
             .palette
-            .clone()
-            .ok_or_else(|| JsValue::from_str("first frame produced no palette"))?;
-        let transparent = quantized[0].transparent;
+            .take()
+            .ok_or_else(|| JsValue::from_str("quantiser produced no palette"))?;
+        let transparent = combined.transparent;
+        let pixels_per_frame = (width as usize) * (height as usize);
         let mut encoder = Encoder::new(&mut out, w16, h16, &palette).map_err(err)?;
         set_repeat(&mut encoder, repeat)?;
-        for (i, frame) in quantized.iter().enumerate() {
-            let mut mapped = Frame::default();
-            mapped.width = w16;
-            mapped.height = h16;
-            mapped.delay = frame.delay;
-            mapped.dispose = DisposalMethod::Keep;
-            mapped.transparent = transparent;
-            if i == 0 {
-                // Frame 0's indices are already in this palette.
-                mapped.buffer = frame.buffer.clone();
-            } else {
-                mapped.buffer = std::borrow::Cow::Owned(map_to_palette(
-                    &frames_rgba[i * frame_len..(i + 1) * frame_len],
-                    &palette,
-                    transparent,
-                ));
-            }
-            encoder.write_frame(&mapped).map_err(err)?;
+        for i in 0..frame_count {
+            let mut frame = Frame::default();
+            frame.width = w16;
+            frame.height = h16;
+            frame.delay = u16::from_le_bytes([delays_cs[i * 2], delays_cs[i * 2 + 1]]);
+            frame.dispose = DisposalMethod::Keep;
+            frame.transparent = transparent;
+            frame.buffer = std::borrow::Cow::Owned(
+                combined.buffer[i * pixels_per_frame..(i + 1) * pixels_per_frame].to_vec(),
+            );
+            encoder.write_frame(&frame).map_err(err)?;
         }
+        // encoder drops here, writing the GIF trailer.
     } else {
         let mut encoder = Encoder::new(&mut out, w16, h16, &[]).map_err(err)?;
         set_repeat(&mut encoder, repeat)?;
-        for frame in &quantized {
-            encoder.write_frame(frame).map_err(err)?;
+        for i in 0..frame_count {
+            let mut px = frames_rgba[i * frame_len..(i + 1) * frame_len].to_vec();
+            let mut frame = Frame::from_rgba_speed(w16, h16, &mut px, speed);
+            frame.delay = u16::from_le_bytes([delays_cs[i * 2], delays_cs[i * 2 + 1]]);
+            frame.dispose = DisposalMethod::Keep;
+            encoder.write_frame(&frame).map_err(err)?;
         }
+        // encoder drops here, writing the GIF trailer.
     }
-    // The encoder borrows `out`; dropping it finalises the stream.
     Ok(out)
 }
 
@@ -118,37 +122,6 @@ fn set_repeat<W: std::io::Write>(encoder: &mut Encoder<W>, repeat: i32) -> Resul
             "repeat must be -1, 0 or a positive count, got {other}"
         ))),
     }
-}
-
-/// Maps raw RGBA pixels to palette indices by nearest RGB distance.
-/// Fully transparent pixels take the palette's transparent slot
-/// when it has one (GIF alpha is binary; see the README).
-fn map_to_palette(rgba: &[u8], palette: &[u8], transparent: Option<u8>) -> Vec<u8> {
-    let colors = palette.len() / 3;
-    let mut indices = Vec::with_capacity(rgba.len() / 4);
-    for px in rgba.chunks_exact(4) {
-        if px[3] == 0 {
-            if let Some(t) = transparent {
-                indices.push(t);
-                continue;
-            }
-        }
-        let (r, g, b) = (px[0] as i32, px[1] as i32, px[2] as i32);
-        let mut best = 0usize;
-        let mut best_distance = i32::MAX;
-        for c in 0..colors {
-            let dr = r - palette[c * 3] as i32;
-            let dg = g - palette[c * 3 + 1] as i32;
-            let db = b - palette[c * 3 + 2] as i32;
-            let d = dr * dr + dg * dg + db * db;
-            if d < best_distance {
-                best_distance = d;
-                best = c;
-            }
-        }
-        indices.push(best as u8);
-    }
-    indices
 }
 
 #[wasm_bindgen]
