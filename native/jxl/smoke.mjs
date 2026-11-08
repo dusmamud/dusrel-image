@@ -76,66 +76,6 @@ function decode(bytes) {
   return { w, h, pixels };
 }
 
-// ---- diagnostic probe matrix (temporary; isolates the
-// ProcessOutput failure dimension by dimension) ----
-{
-  const mod = await import("./out/jxl_probe.mjs");
-  const wasmBytes = await readFile(new URL("./out/jxl_probe.wasm", import.meta.url));
-  const probe = await mod.default({ wasmBinary: wasmBytes });
-  const probeFn = probe.cwrap("dusrel_jxl_probe_encode", "number", [
-    "number",
-    "number",
-    "number",
-    "number",
-    "number",
-    "number",
-    "number",
-    "number",
-    "number",
-    "number",
-    "number",
-  ]);
-  const rgba4 = rgba;
-  const rgb3 = new Uint8Array(W * H * 3);
-  for (let p = 0; p < W * H; p++) {
-    rgb3[p * 3] = rgba[p * 4];
-    rgb3[p * 3 + 1] = rgba[p * 4 + 1];
-    rgb3[p * 3 + 2] = rgba[p * 4 + 2];
-  }
-  const cases = [
-    ["A rgba lossless e3 null-runner (production case)", rgba4, 4, 100, 3, 1, 0, 0],
-    ["D rgba lossy90 e3 null-runner", rgba4, 4, 90, 3, 0, 0, 0],
-    ["E rgba lossy90 e7 null-runner", rgba4, 4, 90, 7, 0, 0, 0],
-    ["F rgba lossless e7 null-runner", rgba4, 4, 100, 7, 1, 0, 0],
-    ["C rgb lossless e3 null-runner", rgb3, 3, 100, 3, 1, 0, 0],
-    ["G rgba lossless e3 null-runner + extra-channel-info", rgba4, 4, 100, 3, 1, 0, 1],
-    ["B rgba lossless e3 THREAD-runner", rgba4, 4, 100, 3, 1, 1, 0],
-  ];
-  for (const [name, px, ch, q, eff, ll, thread, xinfo] of cases) {
-    const inPtr = probe._malloc(px.length);
-    probe.HEAPU8.set(px, inPtr);
-    const sizePtr = probe._malloc(4);
-    const stepPtr = probe._malloc(4);
-    let outPtr = 0;
-    try {
-      outPtr = probeFn(inPtr, W, H, ch, q, eff, ll, thread, xinfo, sizePtr, stepPtr);
-    } catch (e) {
-      console.log(`probe ${name}: THREW ${e.message}`);
-      probe._free(inPtr);
-      probe._free(sizePtr);
-      probe._free(stepPtr);
-      continue;
-    }
-    const step = probe.HEAPU32[stepPtr >> 2];
-    const size = outPtr ? probe.HEAPU32[sizePtr >> 2] : 0;
-    console.log(`probe ${name}: ${outPtr ? `OK ${size} bytes` : `FAIL step ${step}`}`);
-    probe._free(inPtr);
-    probe._free(sizePtr);
-    probe._free(stepPtr);
-    if (outPtr) probe._free(outPtr);
-  }
-}
-
 // 1) Lossless roundtrip must be PIXEL-EXACT.
 const losslessBytes = encode(rgba, 100, 3, 1);
 if (!(losslessBytes[0] === 0xff && losslessBytes[1] === 0x0a)) {

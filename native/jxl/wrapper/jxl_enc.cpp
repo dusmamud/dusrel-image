@@ -45,6 +45,13 @@ extern "C" uint8_t* dusrel_jxl_encode(const uint8_t* rgba, int width, int height
   info.num_color_channels = 3;
   info.num_extra_channels = 1;
   info.alpha_bits = 8;
+  // REQUIRED for lossless: JxlEncoderSetFrameLossless fails
+  // with "Set uses_original_profile=true for lossless
+  // encoding" when the codestream is XYB-encoded (libjxl
+  // encode.cc). It is also the honest description of this
+  // package: sRGB pixels in, sRGB pixels out, no ICC
+  // round-trip through XYB at the container level.
+  info.uses_original_profile = JXL_TRUE;
 
   uint8_t* result = nullptr;
   g_last_step = 2;
@@ -56,27 +63,31 @@ extern "C" uint8_t* dusrel_jxl_encode(const uint8_t* rgba, int width, int height
       g_last_step = 4;
       JxlEncoderFrameSettings* settings = JxlEncoderFrameSettingsCreate(enc, nullptr);
       bool ok = settings != nullptr;
-      g_last_step = 5;
-      if (ok && lossless) {
-        ok = JxlEncoderSetFrameLossless(settings, JXL_TRUE) == JXL_ENC_SUCCESS;
-      } else if (ok) {
-        ok = JxlEncoderSetFrameDistance(settings,
-                                        JxlEncoderDistanceFromQuality(quality)) ==
-             JXL_ENC_SUCCESS;
-      }
-      g_last_step = 6;
+      // The step counter advances only inside the ok-guard, so
+      // a failure reports the step that actually failed (an
+      // earlier version set the counter unconditionally and a
+      // step-5 rejection masqueraded as a step-8 failure).
       if (ok) {
+        g_last_step = 5;
+        ok = lossless
+                 ? JxlEncoderSetFrameLossless(settings, JXL_TRUE) == JXL_ENC_SUCCESS
+                 : JxlEncoderSetFrameDistance(
+                       settings, JxlEncoderDistanceFromQuality(quality)) ==
+                       JXL_ENC_SUCCESS;
+      }
+      if (ok) {
+        g_last_step = 6;
         ok = JxlEncoderFrameSettingsSetOption(settings, JXL_ENC_FRAME_SETTING_EFFORT,
                                               effort) == JXL_ENC_SUCCESS;
       }
       JxlPixelFormat format{4, JXL_TYPE_UINT8, JXL_NATIVE_ENDIAN, 0};
       const size_t rgbaSize = static_cast<size_t>(width) * height * 4;
-      g_last_step = 7;
       if (ok) {
+        g_last_step = 7;
         ok = JxlEncoderAddImageFrame(settings, &format, rgba, rgbaSize) == JXL_ENC_SUCCESS;
       }
-      g_last_step = 8;
       if (ok) {
+        g_last_step = 8;
         JxlEncoderCloseInput(enc);
         std::vector<uint8_t> out;
         std::vector<uint8_t> chunk(65536);
