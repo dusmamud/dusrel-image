@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-crop",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Accessible interactive crop UI on Web Components. Returns geometry only.",
   "license": "MIT",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-quantize",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Lossy PNG via palette quantisation with a permissive Rust quantizer (WASM, lazy-loaded).",
   "license": "MIT",
   "type": "module",

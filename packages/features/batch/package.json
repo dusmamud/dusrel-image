@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-batch",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Multi-file queue, progress, cancellation and worker pool.",
   "license": "MIT",
   "type": "module",

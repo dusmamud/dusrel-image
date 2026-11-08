@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-qoi",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "QOI (Quite OK Image) encode/decode via the Rust qoi crate (WASM, lazy-loaded).",
   "license": "MIT",
   "type": "module",

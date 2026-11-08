@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-jxl",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "JPEG XL codec (libjxl, WASM). Experimental.",
   "license": "MIT",
   "type": "module",

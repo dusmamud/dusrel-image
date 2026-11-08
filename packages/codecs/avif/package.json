@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-avif",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "libavif + libaom codec (WASM, lazy-loaded). Default speed 9; threaded build opt-in only.",
   "license": "MIT",
   "type": "module",

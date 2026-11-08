@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-gif",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "GIF optimisation including animated GIFs (permissive Rust gif-crate based engine).",
   "license": "MIT",
   "type": "module",

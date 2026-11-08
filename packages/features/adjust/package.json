@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-adjust",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Brightness, contrast, saturation, sharpness, blur and filters.",
   "license": "MIT",
   "type": "module",
