@@ -48,8 +48,10 @@ test.beforeEach(async ({ page }) => {
   await loadCodec(page);
 });
 
-function solidFrames() {
-  const mk = (r: number, g: number, b: number) => {
+// Runs INSIDE page.evaluate: ImageData only exists in the page,
+// not in the Node test process.
+const SOLID_FRAMES_SNIPPET = `
+  const mk = (r, g, b) => {
     const data = new ImageData(16, 16);
     for (let p = 0; p < 16 * 16; p++) {
       data.data[p * 4] = r;
@@ -59,14 +61,18 @@ function solidFrames() {
     }
     return data;
   };
-  return [
+  const frames = [
     { data: mk(255, 0, 0), delay: 100 },
     { data: mk(0, 255, 0), delay: 200 },
   ];
-}
+`;
 
 test("gif encode: GIF89a header, browser displays it, roundtrip is exact", async ({ page }) => {
-  const r = await page.evaluate(async (frames) => {
+  const r = await page.evaluate(async (snippet) => {
+    const frames = new Function(`${snippet}; return frames;`)() as {
+      data: ImageData;
+      delay: number;
+    }[];
     const { __gif: gif } = window as unknown as {
       __gif: typeof import("../../packages/features/gif/src/index.js");
     };
@@ -90,7 +96,7 @@ test("gif encode: GIF89a header, browser displays it, roundtrip is exact", async
       first: px(0, 0),
       second: px(1, 0),
     };
-  }, solidFrames());
+  }, SOLID_FRAMES_SNIPPET);
   expect(r.header).toBe("GIF89a");
   expect(r.bitmapWidth).toBe(16);
   expect(r.count).toBe(2);
@@ -101,7 +107,11 @@ test("gif encode: GIF89a header, browser displays it, roundtrip is exact", async
 });
 
 test("gif optimize: global palette re-encode stays pixel-exact and no larger", async ({ page }) => {
-  const r = await page.evaluate(async (frames) => {
+  const r = await page.evaluate(async (snippet) => {
+    const frames = new Function(`${snippet}; return frames;`)() as {
+      data: ImageData;
+      delay: number;
+    }[];
     const { __gif: gif } = window as unknown as {
       __gif: typeof import("../../packages/features/gif/src/index.js");
     };
@@ -118,7 +128,7 @@ test("gif optimize: global palette re-encode stays pixel-exact and no larger", a
       ],
       delays: decoded.frames.map((f) => f.delay),
     };
-  }, solidFrames());
+  }, SOLID_FRAMES_SNIPPET);
   expect(r.optimizedSize).toBeLessThanOrEqual(r.originalSize);
   expect(r.second).toEqual([0, 255, 0]);
   expect(r.delays).toEqual([100, 200]);
