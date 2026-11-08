@@ -51,27 +51,29 @@ RUN emcmake cmake -S libjxl -B libjxl-build \
 
 ENV EMFLAGS="-O3 -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web,worker -s ALLOW_MEMORY_GROWTH=1 -s FILESYSTEM=0 -s ASSERTIONS=0 -s EXPORTED_RUNTIME_METHODS=[\"cwrap\",\"HEAPU8\",\"HEAPU32\"]"
 
-# Link strategy: prefer the split encoder/decoder libraries
-# when the build produced them (smaller modules), fall back to
-# the combined libjxl.a. Everything is linked inside a group
-# so static ordering never matters.
+# Link strategy (learned from the first two build attempts):
+# v0.11.2 produces a combined libjxl.a (with the encoder), a
+# decoder-only libjxl_dec.a, libjxl_cms.a and libjxl_threads.a
+# — there is no libjxl_enc.a. Brotli archive names vary with
+# the shared/static configuration, so they are matched
+# suffix-agnostically. Each module links only its own core
+# (never both jxl archives), everything inside a group so
+# static ordering never matters.
 RUN mkdir -p /build/out \
-  && COMMON="$(find libjxl-build \( -name 'libhwy.a' -o -name 'libbrotlicommon-static.a' -o -name 'libskcms.a' -o -name 'libjxl_threads.a' -o -name 'libjxl_cms.a' \) | tr '\n' ' ')" \
-  && ENC_LIBS="$(find libjxl-build \( -name 'libjxl_enc.a' -o -name 'libbrotlienc-static.a' \) | tr '\n' ' ')" \
-  && DEC_LIBS="$(find libjxl-build \( -name 'libjxl_dec.a' -o -name 'libbrotlidec-static.a' \) | tr '\n' ' ')" \
-  && COMBINED="$(find libjxl-build -name 'libjxl.a' | tr '\n' ' ')" \
-  && if [ -n "$ENC_LIBS" ] && [ -n "$DEC_LIBS" ]; then \
-       ENC_ALL="$ENC_LIBS $COMMON"; DEC_ALL="$DEC_LIBS $COMMON"; \
-     else \
-       ENC_ALL="$COMBINED $ENC_LIBS $DEC_LIBS $COMMON"; DEC_ALL="$ENC_ALL"; \
-     fi \
-  && echo "enc libs: $ENC_ALL" && echo "dec libs: $DEC_ALL" \
+  && JXL_COMBINED="$(find libjxl-build -name 'libjxl.a')" \
+  && JXL_DEC="$(find libjxl-build -name 'libjxl_dec.a')" \
+  && DEC_CORE="${JXL_DEC:-$JXL_COMBINED}" \
+  && SUPPORT="$(find libjxl-build \( -name 'libhwy.a' -o -name 'libskcms.a' -o -name 'libjxl_threads.a' -o -name 'libjxl_cms.a' -o -name 'libbrotlicommon*.a' \) | tr '\n' ' ')" \
+  && BENC="$(find libjxl-build -name 'libbrotlienc*.a' | tr '\n' ' ')" \
+  && BDEC="$(find libjxl-build -name 'libbrotlidec*.a' | tr '\n' ' ')" \
+  && echo "enc core: $JXL_COMBINED | brotli-enc: $BENC | support: $SUPPORT" \
+  && echo "dec core: $DEC_CORE | brotli-dec: $BDEC" \
   && em++ $EMFLAGS -I libjxl/lib/include -I libjxl-build/lib/include wrapper/jxl_enc.cpp \
-       -Wl,--start-group $ENC_ALL -Wl,--end-group \
+       -Wl,--start-group $JXL_COMBINED $BENC $SUPPORT -Wl,--end-group \
        -s EXPORTED_FUNCTIONS='["_dusrel_jxl_encode","_malloc","_free"]' \
        -o /build/out/jxl_enc.js \
   && em++ $EMFLAGS -I libjxl/lib/include -I libjxl-build/lib/include wrapper/jxl_dec.cpp \
-       -Wl,--start-group $DEC_ALL -Wl,--end-group \
+       -Wl,--start-group $DEC_CORE $BDEC $SUPPORT -Wl,--end-group \
        -s EXPORTED_FUNCTIONS='["_dusrel_jxl_decode","_malloc","_free"]' \
        -o /build/out/jxl_dec.js \
   && ls -la /build/out
