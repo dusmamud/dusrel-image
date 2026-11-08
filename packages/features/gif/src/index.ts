@@ -1,10 +1,24 @@
 /**
  * @dusrel/image-gif
  *
- * GIF optimisation including animated GIFs (permissive Rust gif-crate based engine).
+ * GIF encode / decode / optimise (Rust `gif` crate, WASM,
+ * lazy-loaded). Animated GIFs included. The engine is the
+ * permissive replacement for gifsicle (GPL-2.0), dropped on
+ * licence grounds 2026-11-07 — this package stays MIT.
  *
- * Status: scaffold only — no functionality yet. The locked specification
- * for this package lives in docs/PRD.md, docs/TRD.md and this package's
- * README.md.
+ * The WASM artifact lives in this package's `codec/` folder and
+ * is built reproducibly from native/rust (CODEC=gif).
  */
-export const PACKAGE_NAME = "@dusrel/image-gif" as const;
+export { decode } from "./decode.js";
+export { delayToCentiseconds, encode, resolveEncodeOptions } from "./encode.js";
+export { init, setCodecAssets } from "./module.js";
+export { optimize } from "./optimize.js";
+export type {
+  CodecAssets,
+  DecodedGif,
+  GifEncodeOptions,
+  GifFrame,
+  GifFrameInput,
+  GifOptimizeOptions,
+  ResolvedGifEncodeOptions,
+} from "./types.js";

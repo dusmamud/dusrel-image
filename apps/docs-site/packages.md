@@ -35,6 +35,7 @@ ever bundled into the core.
 | `@dusrel/image-metadata` | EXIF read (incl. GPS), metadata strip (all or GPS-only) |
 | `@dusrel/image-watermark` | Image + text watermarks, 9 placements and tiling |
 | `@dusrel/image-batch` | Worker-pool batch engine — retries, timeouts, pause/resume, memory caps |
+| `@dusrel/image-gif` | Animated GIF encode/decode/optimise — Rust `gif` crate (Phase 5) |
 
 ## Frameworks
 
@@ -46,5 +47,4 @@ ever bundled into the core.
 
 ## Planned (Phase 5)
 
-`@dusrel/image-gif`,
 `@dusrel/image-svg` — see the [roadmap](/guide/roadmap).

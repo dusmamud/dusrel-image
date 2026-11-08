@@ -15,6 +15,8 @@ is generated at build time; this file records the standing list.
 | resize (Rust crate) | `@dusrel/image-resize` | MIT |
 | quantizr (Rust crate) | `@dusrel/image-quantize` | MIT |
 | qoi (Rust crate) | `@dusrel/image-qoi` | MIT OR Apache-2.0 |
+| gif (Rust crate) | `@dusrel/image-gif` | MIT OR Apache-2.0 |
+| color_quant (Rust crate) | `@dusrel/image-gif` (quantiser inside the `gif` crate) | MIT |
 | rgb (Rust crate) | `@dusrel/image-resize` (pixel types) | MIT |
 | wasm-bindgen | all Rust codec packages | MIT OR Apache-2.0 |
 | libaom | `@dusrel/image-avif` | BSD 2-Clause + patent grant |
