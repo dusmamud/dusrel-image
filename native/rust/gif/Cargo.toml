@@ -1,0 +1,13 @@
+[package]
+name = "dusrel-gif"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Rust gif crate compiled to WASM for @dusrel/image-gif"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "=0.2.130"
+gif = "=0.14.2"

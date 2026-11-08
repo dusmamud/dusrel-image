@@ -173,6 +173,26 @@ jobs:
           path: wasm-out/qoi
           if-no-files-found: error
 
+  rust-gif:
+    name: Build Rust GIF WASM (@dusrel/image-gif)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the pinned Docker image
+        run: docker build --build-arg CODEC=gif -t dusrel/rust-gif native/rust
+      - name: Run the build and collect artifacts
+        run: |
+          mkdir -p wasm-out/gif
+          docker run --rm -v "$PWD/wasm-out/gif:/out" dusrel/rust-gif
+          ls -la wasm-out/gif
+      - name: Upload GIF artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: gif-wasm
+          path: wasm-out/gif
+          if-no-files-found: error
+
   rust-quantize:
     name: Build Rust Quantize WASM (@dusrel/image-quantize)
     runs-on: ubuntu-latest
