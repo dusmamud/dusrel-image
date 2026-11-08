@@ -22,6 +22,7 @@ ever bundled into the core.
 | `@dusrel/image-oxipng` | OxiPNG — lossless PNG optimisation |
 | `@dusrel/image-resize` | Rust `resize` crate — high-quality resampling, 7 filters |
 | `@dusrel/image-quantize` | quantizr — palette quantisation for PNG-8 style savings |
+| `@dusrel/image-qoi` | Rust `qoi` crate — lossless QOI encode/decode (Phase 5, experimental) |
 
 ## Features
 
@@ -44,5 +45,5 @@ ever bundled into the core.
 
 ## Planned (Phase 5)
 
-`@dusrel/image-jxl`, `@dusrel/image-qoi`, `@dusrel/image-gif`,
+`@dusrel/image-jxl`, `@dusrel/image-gif`,
 `@dusrel/image-svg` — see the [roadmap](/guide/roadmap).

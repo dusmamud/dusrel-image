@@ -14,6 +14,7 @@ is generated at build time; this file records the standing list.
 | oxipng (Rust crate) | `@dusrel/image-oxipng` | MIT |
 | resize (Rust crate) | `@dusrel/image-resize` | MIT |
 | quantizr (Rust crate) | `@dusrel/image-quantize` | MIT |
+| qoi (Rust crate) | `@dusrel/image-qoi` | MIT OR Apache-2.0 |
 | rgb (Rust crate) | `@dusrel/image-resize` (pixel types) | MIT |
 | wasm-bindgen | all Rust codec packages | MIT OR Apache-2.0 |
 | libaom | `@dusrel/image-avif` | BSD 2-Clause + patent grant |

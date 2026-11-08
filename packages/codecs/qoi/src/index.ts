@@ -1,10 +1,13 @@
 /**
  * @dusrel/image-qoi
  *
- * QOI codec. Optional.
- *
- * Status: scaffold only — no functionality yet. The locked specification
- * for this package lives in docs/PRD.md, docs/TRD.md and this package's
- * README.md.
+ * QOI ("Quite OK Image") codec via the Rust `qoi` crate (WASM,
+ * lazy-loaded). Separate encode/decode entries, each built from
+ * the same crate with a different cargo feature (see
+ * native/rust). Lossless, extremely fast, tiny modules — a
+ * niche format for pipelines that control both ends.
  */
-export const PACKAGE_NAME = "@dusrel/image-qoi" as const;
+export { encode, initEncode } from "./encode.js";
+export { decode, initDecode } from "./decode.js";
+export { setCodecAssets } from "./module.js";
+export type { CodecAssets } from "./types.js";

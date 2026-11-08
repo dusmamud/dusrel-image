@@ -1,7 +1,7 @@
 {
   "name": "@dusrel/image-qoi",
   "version": "0.0.0",
-  "description": "QOI codec. Optional.",
+  "description": "QOI (Quite OK Image) encode/decode via the Rust qoi crate (WASM, lazy-loaded).",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -9,13 +9,15 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./codec/*": "./codec/*"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "codec"
   ],
   "scripts": {
     "build": "tsdown",
