@@ -2,5 +2,15 @@
   "name": "@dusrel/docs-site",
   "version": "0.0.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "pnpm run build:api && vitepress build",
+    "build:api": "typedoc",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "typedoc": "^0.28.0",
+    "vitepress": "^1.6.4"
+  }
 }

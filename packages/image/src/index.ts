@@ -47,6 +47,7 @@ export {
   type ImageInput,
   type OutputFormat,
   type ProcessResult,
+  type ProgressStep,
   type Rect,
   type ResizeOptions,
 } from "@dusrel/image-core";
