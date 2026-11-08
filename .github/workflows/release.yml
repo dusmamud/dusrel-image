@@ -1,17 +1,27 @@
 name: Release
 
-# Scaffold: the publish step activates once the npm @dusrel scope is owned and
-# an NPM_TOKEN secret exists (docs/RELEASE.md). Until then this verifies that
-# the release tooling itself runs.
+# Changesets flow (docs/RELEASE.md): on every push to main this
+# either maintains the "Version Packages" PR (while changesets
+# exist) or, once that PR is merged, publishes the bumped
+# packages to npm. Publishing authenticates with the NPM_TOKEN
+# secret (a granular token scoped to the dusrel org) for the
+# first release — npm cannot create a package via OIDC trusted
+# publishing, so the token bootstraps the packages into
+# existence; provenance attestations are attached via OIDC
+# (id-token: write + NPM_CONFIG_PROVENANCE).
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
+  id-token: write
 
 jobs:
-  release-check:
-    name: Changesets status
+  release:
+    name: Version or publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -20,7 +30,14 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
+          registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - name: Changesets status (informational until first publish)
-        run: pnpm exec changeset status || true
+      - name: Create Release PR or publish to npm
+        uses: changesets/action@v1
+        with:
+          publish: pnpm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "true"

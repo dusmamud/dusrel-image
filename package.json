@@ -16,6 +16,7 @@
     "lint": "oxlint .",
     "format": "oxfmt --check .",
     "size": "size-limit",
+    "release": "turbo run build && changeset publish",
     "check:packages": "publint --strict ./packages/core && attw --pack ./packages/core --format table --ignore-rules cjs-resolves-to-esm"
   },
   "devDependencies": {
