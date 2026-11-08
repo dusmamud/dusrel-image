@@ -105,6 +105,8 @@ importers:
         specifier: workspace:*
         version: link:../../core
 
+  packages/features/placeholder: {}
+
   packages/features/svg:
     dependencies:
       svgo:

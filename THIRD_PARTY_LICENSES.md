@@ -28,6 +28,8 @@ is generated at build time; this file records the standing list.
 | libimagequant | — (not used) | GPL-3.0-or-later for FLOSS use; commercial licence required for closed-source/AppStore use — see pngquant.org/lib. **Dropped by decision on 2026-11-07**: `@dusrel/image-quantize` uses a permissive quantizer instead, keeping the package MIT. |
 | gifsicle | — (not used) | GPL-2.0-only; closed-source use requires the author's permission. **Dropped by decision on 2026-11-07**: `@dusrel/image-gif` uses a permissive Rust `gif`-crate based optimiser/encoder instead, keeping the package MIT. |
 | SVGO | `@dusrel/image-svg` | MIT |
+| ThumbHash algorithm (Evan Wallace) | `@dusrel/image-placeholder` (from-spec TypeScript implementation; no code dependency) | MIT |
+| BlurHash algorithm (Wolt) | `@dusrel/image-placeholder` (from-spec TypeScript implementation; no code dependency) | MIT |
 | wasm-feature-detect (dev/runtime helper in codec packages) | codec packages | Apache-2.0 |
 | Squoosh / jSquash (reference & codec packaging) | — | Apache-2.0 |
 

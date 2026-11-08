@@ -37,6 +37,7 @@ ever bundled into the core.
 | `@dusrel/image-batch` | Worker-pool batch engine — retries, timeouts, pause/resume, memory caps |
 | `@dusrel/image-gif` | Animated GIF encode/decode/optimise — Rust `gif` crate (Phase 5) |
 | `@dusrel/image-svg` | SVG optimisation — SVGO browser build, multipass + ID preservation (Phase 5) |
+| `@dusrel/image-placeholder` | ThumbHash + BlurHash placeholders — pure TypeScript, aspect + alpha aware (Phase 5) |
 
 ## Frameworks
 

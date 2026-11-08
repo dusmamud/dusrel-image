@@ -23,6 +23,7 @@
       "@dusrel/image-batch",
       "@dusrel/image-gif",
       "@dusrel/image-svg",
+      "@dusrel/image-placeholder",
       "@dusrel/image-react",
       "@dusrel/image-vue",
       "@dusrel/image-svelte"
