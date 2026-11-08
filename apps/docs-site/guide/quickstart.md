@@ -63,6 +63,59 @@ React, Vue and Svelte users get typed wrappers from
 `@dusrel/image-react`, `@dusrel/image-vue` and
 `@dusrel/image-svelte`.
 
+## WASM codecs with Vite
+
+Codec packages (`@dusrel/image-jpeg`, `-webp`, `-avif`, `-png`,
+`-jxl`, `-qoi`, `-heic`, `-oxipng`, `-quantize`, `-resize`, `-gif`)
+load their `.wasm` and glue `.js` from URLs resolved relative to
+their own module — no configuration needed in production builds:
+Vite emits the codec files as assets and rewrites the URLs.
+
+**Vite dev is different.** The dev server pre-bundles dependencies
+into `node_modules/.vite/deps/`, which relocates the codec code and
+breaks those relative URLs (the WASM request returns the page HTML
+instead of the binary). Two fixes, both verified against the
+published 1.0.0 packages:
+
+Option A — exclude the codec packages from pre-bundling
+(keeps the default asset URLs working):
+
+```ts
+// vite.config.ts
+export default defineConfig({
+  optimizeDeps: {
+    exclude: [
+      '@dusrel/image-jpeg', '@dusrel/image-webp', '@dusrel/image-avif',
+      '@dusrel/image-png', '@dusrel/image-oxipng', '@dusrel/image-quantize',
+      '@dusrel/image-resize', '@dusrel/image-jxl', '@dusrel/image-qoi',
+      '@dusrel/image-heic', '@dusrel/image-gif',
+    ],
+  },
+});
+```
+
+Option B — hand the loader bundler-emitted URLs explicitly
+(works in dev and production, no config change):
+
+```ts
+import { setCodecAssets } from '@dusrel/image-jpeg';
+import encJs from '@dusrel/image-jpeg/codec/mozjpeg_enc.js?url';
+import encWasm from '@dusrel/image-jpeg/codec/mozjpeg_enc.wasm?url';
+import decJs from '@dusrel/image-jpeg/codec/mozjpeg_dec.js?url';
+import decWasm from '@dusrel/image-jpeg/codec/mozjpeg_dec.wasm?url';
+
+setCodecAssets({
+  encodeJsUrl: encJs,
+  encodeWasmUrl: encWasm,
+  decodeJsUrl: decJs,
+  decodeWasmUrl: decWasm,
+});
+```
+
+Every codec package accepts the same `setCodecAssets` override —
+it is also the mechanism for self-hosting the codec files or
+pinning them to a CDN.
+
 ## No build step? Use the CDN
 
 See `examples/cdn` in the repository for an import-map page

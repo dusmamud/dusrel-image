@@ -5,6 +5,20 @@ with lazy-loaded WASM (see TRD.md). Sizes below are the upstream WASM
 binaries' approximate sizes at research time (Nov 2026) and must be
 re-measured at build time.
 
+## Codec assets and bundlers
+
+Every codec package resolves its `.wasm`/glue `.js` with
+`new URL('../codec/<file>', import.meta.url)` and lets callers
+override any of the four URLs via `setCodecAssets`. Production
+bundlers (Vite/Rollup, webpack) fingerprint and emit those files
+automatically. Dev servers that *pre-bundle* dependencies into a
+different directory (Vite's `optimizeDeps`) relocate the code and
+break the relative resolution — the fetch returns HTML instead of
+WASM. Fixes, verified against the published packages in a fresh
+React + Vite consumer project: exclude the codec packages from
+`optimizeDeps`, or pass `?url` imports to `setCodecAssets`. The
+Quickstart's "WASM codecs with Vite" section has both recipes.
+
 ## JPEG — `@dusrel/image-jpeg` (MozJPEG, ~246 KB WASM)
 - Controls: quality (0..100 mapped from the API's 0..1), progressive on/off,
   chroma subsampling (4:4:4 / 4:2:2 / 4:2:0), optimised Huffman tables.
