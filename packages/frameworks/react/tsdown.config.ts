@@ -22,5 +22,9 @@ export default defineConfig([
     // safety); the fixture must be ONE file for Blob-URL loading,
     // so dynamic imports are inlined here.
     outputOptions: { inlineDynamicImports: true },
+    // React's CJS entry branches on process.env.NODE_ENV, which
+    // does not exist in a raw browser module — pin production
+    // (consumers' bundlers do the same for the library build).
+    define: { "process.env.NODE_ENV": '"production"' },
   },
 ]);
