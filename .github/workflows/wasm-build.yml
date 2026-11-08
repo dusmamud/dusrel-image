@@ -153,6 +153,26 @@ jobs:
           path: wasm-out/jxl
           if-no-files-found: error
 
+  libheif:
+    name: Build libheif WASM (@dusrel/image-heic)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the pinned Docker image
+        run: docker build -t dusrel/heic native/heic
+      - name: Run the build and collect artifacts
+        run: |
+          mkdir -p wasm-out/heic
+          docker run --rm -v "$PWD/wasm-out/heic:/out" dusrel/heic
+          ls -la wasm-out/heic
+      - name: Upload libheif artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: heic-wasm
+          path: wasm-out/heic
+          if-no-files-found: error
+
   rust-qoi:
     name: Build Rust QOI WASM (@dusrel/image-qoi)
     runs-on: ubuntu-latest

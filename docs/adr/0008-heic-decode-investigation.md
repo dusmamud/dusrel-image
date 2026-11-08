@@ -1,8 +1,10 @@
 # ADR-0008: HEIC decode — investigation and licence position
 
-- Status: Proposed (2026-11-08) — investigation complete; the
-  licence exception in Option A is Dus's call, following the
-  pattern of the two licence decisions he closed on 2026-11-07.
+- Status: Accepted (2026-11-08) — Dus chose Option A
+  ("Option A add karo"). Implementation follows the codec
+  recipe in the Consequences below: own Emscripten build of
+  libheif v1.23.7 + libde265 1.0.15 under `native/heic/`,
+  decode-only, native-first.
 
 ## Context
 
