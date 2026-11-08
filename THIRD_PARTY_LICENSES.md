@@ -30,6 +30,8 @@ is generated at build time; this file records the standing list.
 | SVGO | `@dusrel/image-svg` | MIT |
 | ThumbHash algorithm (Evan Wallace) | `@dusrel/image-placeholder` (from-spec TypeScript implementation; no code dependency) | MIT |
 | BlurHash algorithm (Wolt) | `@dusrel/image-placeholder` (from-spec TypeScript implementation; no code dependency) | MIT |
+| libheif v1.23.7 | `@dusrel/image-heic` (engine files only, `codec/heic_dec.js` + `heic_dec.wasm`) | **LGPL-3.0** — the family's single LGPL engine, accepted by Dus's ADR-0008 Option A decision (2026-11-08). Wrapper code stays MIT; engine files ship unmodified and user-replaceable via `setCodecAssets`; licence text at `packages/codecs/heic/codec/LICENSE.libheif`, build recipe at `native/heic/` |
+| libde265 1.0.15 | `@dusrel/image-heic` (HEVC decoder inside the same engine files) | **LGPL-3.0** — same fencing as libheif; licence text at `packages/codecs/heic/codec/LICENSE.libde265` |
 | wasm-feature-detect (dev/runtime helper in codec packages) | codec packages | Apache-2.0 |
 | Squoosh / jSquash (reference & codec packaging) | — | Apache-2.0 |
 

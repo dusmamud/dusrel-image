@@ -24,6 +24,7 @@ ever bundled into the core.
 | `@dusrel/image-quantize` | quantizr — palette quantisation for PNG-8 style savings |
 | `@dusrel/image-qoi` | Rust `qoi` crate — lossless QOI encode/decode (Phase 5, experimental) |
 | `@dusrel/image-jxl` | libjxl — JPEG XL encode/decode (Phase 5, experimental) |
+| `@dusrel/image-heic` | libheif + libde265 — HEIC/HEIF decode only, native-first on Safari (Phase 5; engine LGPL-3.0, wrapper MIT — ADR-0008) |
 
 ## Features
 

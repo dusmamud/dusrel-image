@@ -24,6 +24,7 @@
       "@dusrel/image-gif",
       "@dusrel/image-svg",
       "@dusrel/image-placeholder",
+      "@dusrel/image-heic",
       "@dusrel/image-react",
       "@dusrel/image-vue",
       "@dusrel/image-svelte"

@@ -61,6 +61,8 @@ importers:
 
   packages/codecs/avif: {}
 
+  packages/codecs/heic: {}
+
   packages/codecs/jpeg: {}
 
   packages/codecs/jxl: {}

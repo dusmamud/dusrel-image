@@ -125,8 +125,12 @@
 > decode-only, native-first). The placeholder investigation
 > became a shipped package rather than a spike because both
 > algorithms are MIT (ADR-0009).
-> Open: the ADR-0008 decision; a first npm release via
-> Changesets (org `dusrel` exists, nothing published yet).
+> ADR-0008 was decided the same day: Dus chose Option A, and
+> `@dusrel/image-heic` shipped on top of this phase
+> (libheif v1.23.7 + libde265 1.0.15, decode-only,
+> native-first; engine LGPL-3.0, wrapper MIT).
+> Open: a first npm release via Changesets (org `dusrel`
+> exists, nothing published yet).
 
 ## Later / explicitly not v1
 - Client-side AI plugins (e.g. background removal with on-device models) —
