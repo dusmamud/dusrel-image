@@ -11,11 +11,15 @@
 # The build follows upstream libheif's own build-emscripten.sh
 # recipe — libde265 via its autotools build (the exact flags
 # upstream pins), libheif via CMake with plugin loading off —
-# but links OUR minimal C-API glue (wrapper/heif_dec.cpp)
-# instead of upstream's Embind module, in the family EMFLAGS
-# style of the other C codecs. libheif's archives are linked
-# whole-archive: its codec registrations live in static
-# initialisers that a normal link would drop.
+# but links OUR minimal C-API glue (wrapper/heif_dec.cpp) as
+# the entry point, in the family EMFLAGS style of the other C
+# codecs. libheif's archives are linked whole-archive: its
+# codec registrations live in static initialisers that a
+# normal link would drop. The link also needs -lembind (as
+# upstream's own link does): libheif's Emscripten build
+# compiles its Embind registration unit into libheif.a, and
+# the whole-archive link pulls it in — the registrations are
+# inert for us, our exported C functions are the only API.
 FROM emscripten/emsdk:3.1.66
 
 ARG LIBHEIF_VERSION=1.23.7
@@ -65,7 +69,7 @@ RUN mkdir -p /build/out \
   && em++ $EMFLAGS -I libheif/libheif/api -I libheif-build -I libheif-build/libheif \
        wrapper/heif_dec.cpp \
        -Wl,--whole-archive $HEIF_AS -Wl,--no-whole-archive \
-       -L/build/libde265/libde265/.libs -lde265 \
+       -L/build/libde265/libde265/.libs -lde265 -lembind \
        -s EXPORTED_FUNCTIONS='["_dusrel_heic_decode","_dusrel_heic_last_step","_malloc","_free"]' \
        -o /build/out/heic_dec.js \
   && cp libheif/examples/example.heic /build/out/fixture.heic \
