@@ -6,6 +6,11 @@
 # a parallel runner, so encoding/decoding runs on the calling
 # thread and needs no SharedArrayBuffer/COOP/COEP.
 #
+# JPEGXL_BUNDLE_LIBPNG is OFF: the bundle exists for the
+# tools/extras PNG file support, which a raw-pixels codec
+# never uses; without the flag CMake demands the libpng
+# submodule even with tools off.
+#
 # Only the submodules the library build needs are initialised:
 # brotli (entropy coding), highway (SIMD abstraction;scalar
 # build here) and skcms (the default colour management in
@@ -40,6 +45,7 @@ RUN emcmake cmake -S libjxl -B libjxl-build \
       -DJPEGXL_ENABLE_OPENEXR=OFF \
       -DJPEGXL_ENABLE_JPEGLI=OFF \
       -DJPEGXL_ENABLE_SJPEG=OFF \
+      -DJPEGXL_BUNDLE_LIBPNG=OFF \
   && emmake make -C libjxl-build -j"$(nproc)" \
   && find libjxl-build -name "*.a" | sort
 

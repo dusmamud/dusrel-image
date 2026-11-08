@@ -13,10 +13,19 @@ async function load(kind, fnName, sig, ret = "number") {
 }
 
 const { instance: enc, fn: encFn } = await load("enc", "dusrel_jxl_encode", [
-  "number", "number", "number", "number", "number", "number", "number",
+  "number",
+  "number",
+  "number",
+  "number",
+  "number",
+  "number",
+  "number",
 ]);
 const { instance: dec, fn: decFn } = await load("dec", "dusrel_jxl_decode", [
-  "number", "number", "number", "number",
+  "number",
+  "number",
+  "number",
+  "number",
 ]);
 
 const W = 16;
@@ -66,9 +75,7 @@ function decode(bytes) {
 // 1) Lossless roundtrip must be PIXEL-EXACT.
 const losslessBytes = encode(rgba, 100, 3, 1);
 if (!(losslessBytes[0] === 0xff && losslessBytes[1] === 0x0a)) {
-  throw new Error(
-    `smoke: bad codestream signature ${losslessBytes[0]},${losslessBytes[1]}`,
-  );
+  throw new Error(`smoke: bad codestream signature ${losslessBytes[0]},${losslessBytes[1]}`);
 }
 const losslessOut = decode(losslessBytes);
 if (losslessOut.w !== W || losslessOut.h !== H) throw new Error("smoke: dims wrong");
