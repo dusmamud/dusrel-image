@@ -32,12 +32,15 @@ export {
   type BatchOptions,
   type BatchProgressEvent,
 } from "./batch.js";
+export { findCodec, runPluginSteps, wrapPluginError } from "./plugins.js";
 export type {
+  CodecPluginDefinition as CodecDefinition,
   FallbackPolicy,
   ImageOptions,
   ImagePlugin,
   ImageResult,
   PluginContext,
+  PluginPreviousResult,
   ProcessReport,
 } from "./types.js";
 export {

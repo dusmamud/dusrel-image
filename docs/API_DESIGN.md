@@ -60,7 +60,40 @@ exactly one engine, never two divergent code paths.
 
 ## 6. Plugins
 
-The main pipeline accepts registered plugins: a plugin may add a step
-(transform) or a codec (format). Plugin contract = the same input/options/
-result/error shape as built-in steps. Plugins run only when the developer
-registers them; the core ships no plugin code.
+The main package accepts registered plugins of two kinds; plugins run
+only when the developer registers them, and the core ships no plugin
+code. This surface was stabilised in Phase 5 (ADR-0007) and is covered
+by a conformance suite (`packages/image/test/plugins.test.ts`,
+`tests/browser/plugins.spec.ts`).
+
+**Step plugins** (`ImagePlugin`: `{ name, format?, apply(blob, ctx) }`)
+transform a Blob into a Blob. `ctx` is `{ previous?, signal? }`:
+`previous` is the last stage's result (format widened to any MIME
+type), `signal` the run's AbortSignal. On the fluent pipeline a step
+runs at its registered position and splits canvas segments there. In
+easy mode (`processImage`) steps run in order after the core pass and
+before any codec encode. Report steps record `plugin:<name>`. When a
+step changes the output MIME type it declares it via `format`
+(`codecPlugin` sets the codec's type; `imageDataPlugin` sets
+`image/png`), and the result/report format follows the last such
+declaration. Factories: `codecPlugin(def)`, `imageDataPlugin(def)`,
+and the pipeline builder's `.codec(def)` sugar.
+
+**Codec registrations** make a non-canvas format selectable:
+`processImage(input, { format: "image/avif", codecs: [avifDef] })`,
+where a definition is `{ name?, mimeType, encode, options? }` — a
+codec package's encode plus the MIME type it produces. The core pass
+runs losslessly (PNG) and the codec encodes the pixels; the report
+records `codec:<format>` and the result/report `format` is the
+codec's MIME type (which is why both are typed `string`, not the
+canvas union). A non-canvas format with NO registered codec throws
+the typed `unsupported-format` error before any processing — never a
+silent fallback.
+
+**Errors.** Plugin failures surface in the family's typed shape
+(`DusrelImageError`): a typed error passes through untouched, an
+abort becomes code `aborted`, and anything else becomes code
+`plugin-failed` with the plugin named in the message and the
+original error preserved as `cause` (`wrapPluginError`). Fallback
+policies apply to the whole easy-mode call, as documented in
+section 2.

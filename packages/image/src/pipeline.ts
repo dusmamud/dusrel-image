@@ -15,9 +15,11 @@ import type {
   Rect,
   ResizeOptions,
 } from "@dusrel/image-core";
+import { codecPlugin } from "./codec-plugin.js";
 import { processImage } from "./process.js";
+import { runPluginSteps } from "./plugins.js";
 import { buildReport } from "./report.js";
-import type { ImageOptions, ImagePlugin, ImageResult } from "./types.js";
+import type { CodecPluginDefinition, ImageOptions, ImagePlugin, ImageResult } from "./types.js";
 
 export type PipelineOp =
   | { type: "crop"; rect: Rect }
@@ -134,6 +136,15 @@ export class PipelineBuilder {
     return this;
   }
 
+  /**
+   * Registers a codec package as the step at this position -
+   * sugar for `.use(codecPlugin(def))`. As the last step it is
+   * the pipeline's output format (the report's format follows).
+   */
+  codec(def: CodecPluginDefinition): this {
+    return this.use(codecPlugin(def));
+  }
+
   /** The merged execution plan (useful for inspection and tests). */
   plan(): PipelineSegment[] {
     return buildSegments(this.#ops);
@@ -150,8 +161,9 @@ export class PipelineBuilder {
     delete runOptions.plugins;
 
     let current: ImageInput = this.#input;
-    let last: ProcessResult | undefined;
+    let last: ImageResult | undefined;
     let originalBytes: number | undefined;
+    let outputFormat: string | undefined;
     const stepsApplied: string[] = [];
     const fallbacks: string[] = [];
 
@@ -175,20 +187,35 @@ export class PipelineBuilder {
           last = materialised;
           current = materialised.blob;
         }
-        const blob = await segment.plugin.apply(current as Blob, {
+        const stepped = await runPluginSteps(current as Blob, [segment.plugin], {
           previous: last,
           ...(options.signal ? { signal: options.signal } : {}),
         });
-        stepsApplied.push(`plugin:${segment.plugin.name}`);
-        last = { ...last, blob, sizeBytes: blob.size };
-        current = blob;
+        stepsApplied.push(...stepped.steps);
+        if (segment.plugin.format) outputFormat = segment.plugin.format;
+        last = { ...last, blob: stepped.blob, sizeBytes: stepped.blob.size };
+        current = stepped.blob;
       }
     }
 
-    const finalResult: ProcessResult = { ...(last as ProcessResult) };
+    // `last` is an ImageResult; the core-typed record drops its
+    // report and keeps the (possibly codec) format via one cast -
+    // the public ImageResult below carries the format truthfully
+    // as a string.
+    const { report: _lastReport, ...lastResult } = last as ImageResult;
+    const finalResult: ProcessResult = {
+      ...lastResult,
+      format: lastResult.format as ProcessResult["format"],
+    };
     if (originalBytes !== undefined) finalResult.originalSizeBytes = originalBytes;
     const report = buildReport(finalResult, performance.now() - started, fallbacks);
     report.stepsApplied = stepsApplied;
+    if (outputFormat !== undefined) {
+      // A codec step set the real output format; the canvas-typed
+      // result still names the intermediate - correct the record.
+      report.format = outputFormat;
+      return { ...finalResult, format: outputFormat, report };
+    }
     return { ...finalResult, report };
   }
 }

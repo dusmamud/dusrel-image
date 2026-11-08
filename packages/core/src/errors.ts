@@ -12,6 +12,7 @@ export type DusrelErrorCode =
   | "invalid-input"
   | "invalid-options"
   | "platform-unsupported"
+  | "plugin-failed"
   | "unsupported-format";
 
 export class DusrelImageError extends Error {

@@ -6,27 +6,98 @@
 import {
   decodeImage,
   DusrelImageError,
+  OUTPUT_FORMATS,
   processImage as coreProcessImage,
   type ImageInput,
+  type OutputFormat,
   type ProcessOptions,
   type ProcessResult,
 } from "@dusrel/image-core";
+import { resolveCodecPluginName } from "./codec-plugin.js";
 import { downgradeChain } from "./fallback.js";
+import { encodeViaCodec, findCodec, runPluginSteps } from "./plugins.js";
 import { buildReport } from "./report.js";
-import type { ImageOptions, ImageResult } from "./types.js";
+import type { CodecPluginDefinition, ImageOptions, ImagePlugin, ImageResult } from "./types.js";
 
-function splitOptions(options: ImageOptions): {
+interface SplitOptions {
   core: ProcessOptions;
   fallback: ImageOptions["fallback"];
   timeoutMs?: number;
-} {
-  const { fallback = "throw", timeoutMs, plugins: _plugins, ...core } = options;
-  const out: { core: ProcessOptions; fallback: ImageOptions["fallback"]; timeoutMs?: number } = {
-    core,
-    fallback,
-  };
+  plugins?: ImagePlugin[];
+  codecDef?: CodecPluginDefinition;
+}
+
+/**
+ * Splits wrapper options from core options and resolves a
+ * non-canvas `format` against the registered codecs
+ * (docs/API_DESIGN.md section 6). An unregistered non-canvas
+ * format is a programming error: it throws the typed
+ * `unsupported-format` error here, before any processing -
+ * never a silent fallback to a canvas format.
+ */
+function splitOptions(options: ImageOptions): SplitOptions {
+  const { fallback = "throw", timeoutMs, plugins, codecs, format, ...rest } = options;
+  const core: ProcessOptions = { ...rest };
+  let codecDef: CodecPluginDefinition | undefined;
+  if (format !== undefined) {
+    if ((OUTPUT_FORMATS as readonly string[]).includes(format)) {
+      core.format = format as OutputFormat;
+    } else {
+      codecDef = findCodec(codecs, format);
+      if (!codecDef) {
+        throw new DusrelImageError(
+          "unsupported-format",
+          `Format "${format}" is not a canvas format and no codec is registered for it. ` +
+            "Pass the codec package's definition in options.codecs.",
+        );
+      }
+      // The core pass runs losslessly; the codec encodes after.
+      core.format = "image/png";
+    }
+  }
+  const out: SplitOptions = { core, fallback };
   if (timeoutMs !== undefined) out.timeoutMs = timeoutMs;
+  if (plugins !== undefined) out.plugins = plugins;
+  if (codecDef !== undefined) out.codecDef = codecDef;
   return out;
+}
+
+/**
+ * The post-core stages of easy mode: registered plugin steps in
+ * order, then the registered codec encode when `format` named
+ * one. Report steps record both (`plugin:<name>`, `codec:<fmt>`).
+ */
+async function applyPluginsAndCodec(
+  result: ProcessResult,
+  split: SplitOptions,
+  signal: AbortSignal | undefined,
+  started: number,
+  fallbacks: string[],
+): Promise<ImageResult> {
+  let current: ProcessResult = result;
+  const context = { previous: current, ...(signal ? { signal } : {}) };
+  if (split.plugins && split.plugins.length > 0) {
+    const stepped = await runPluginSteps(current.blob, split.plugins, context);
+    current = {
+      ...current,
+      blob: stepped.blob,
+      sizeBytes: stepped.blob.size,
+      steps: [...current.steps, ...stepped.steps],
+    };
+  }
+  if (split.codecDef) {
+    const encoded = await encodeViaCodec(current.blob, split.codecDef, context);
+    const withCodec: ProcessResult = {
+      ...current,
+      blob: encoded,
+      sizeBytes: encoded.size,
+      steps: [...current.steps, resolveCodecPluginName(split.codecDef)],
+    };
+    const report = buildReport(withCodec, performance.now() - started, fallbacks);
+    report.format = split.codecDef.mimeType;
+    return { ...withCodec, format: split.codecDef.mimeType, report };
+  }
+  return toImageResult(current, started, fallbacks);
 }
 
 /** Combines the caller's signal with an optional timeout into one signal. */
@@ -114,7 +185,8 @@ export async function processImage(
   options: ImageOptions = {},
 ): Promise<ImageResult> {
   const started = performance.now();
-  const { core, fallback, timeoutMs } = splitOptions(options);
+  const split = splitOptions(options);
+  const { core, fallback, timeoutMs } = split;
   const fallbacks: string[] = [];
   const timed = withTimeout(core.signal, timeoutMs);
   const effective: ProcessOptions = { ...core };
@@ -123,7 +195,7 @@ export async function processImage(
 
   try {
     const result = await coreProcessImage(input, effective);
-    return toImageResult(result, started, fallbacks);
+    return await applyPluginsAndCodec(result, split, effective.signal, started, fallbacks);
   } catch (cause) {
     if (fallback === "return-original") {
       const original = await originalAsResult(input, [...fallbacks, "return-original"], started);

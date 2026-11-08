@@ -20,12 +20,45 @@ export type { ImageInput, OutputFormat, ProcessResult };
  */
 export type FallbackPolicy = "throw" | "return-original" | "downgrade-format";
 
-export interface ImageOptions extends ProcessOptions {
+/**
+ * A codec registration: a WASM codec package's encode function plus
+ * the MIME type it produces (docs/API_DESIGN.md section 6, stabilised
+ * in ADR-0007). Register via `ImageOptions.codecs` and select with
+ * `format`, or turn one into a pipeline step with `codecPlugin`.
+ */
+export interface CodecPluginDefinition<Options = unknown> {
+  /** Step name for the report. Default: derived from mimeType ('image/avif' -> 'codec:avif'). */
+  name?: string;
+  /** Output MIME type, e.g. 'image/avif'. */
+  mimeType: string;
+  /** The codec package's encode function (ImageData -> encoded bytes). */
+  encode: (
+    data: ImageData,
+    options?: Options,
+  ) => Promise<ArrayBuffer | Uint8Array> | ArrayBuffer | Uint8Array;
+  /** Options forwarded verbatim to the codec's encode. */
+  options?: Options;
+}
+
+export interface ImageOptions extends Omit<ProcessOptions, "format"> {
+  /**
+   * Output format: a canvas MIME type ('image/jpeg' | 'image/png' |
+   * 'image/webp'), or the MIME type of a codec registered in
+   * `codecs`. An unregistered non-canvas format fails with the
+   * typed `unsupported-format` error - never a silent fallback.
+   */
+  format?: string;
   fallback?: FallbackPolicy;
   /** Abort the operation after this many milliseconds. */
   timeoutMs?: number;
-  /** Step plugins, run in order between pipeline segments. Fluent API only. */
+  /**
+   * Step plugins. On a pipeline they run at their registered
+   * position; in easy mode (`processImage`) they run in order
+   * after the core pass (and before a registered codec encode).
+   */
   plugins?: ImagePlugin[];
+  /** Codec registrations that make non-canvas formats selectable via `format`. */
+  codecs?: CodecPluginDefinition[];
 }
 
 /** The processing report every entry point returns (docs/ARCHITECTURE.md section 1). */
@@ -38,7 +71,8 @@ export interface ProcessReport {
   savingsRatio?: number;
   width: number;
   height: number;
-  format: OutputFormat;
+  /** Output MIME type: a canvas format, or a registered codec's. */
+  format: string;
   /** Operations actually applied, in order. */
   stepsApplied: string[];
   durationMs: number;
@@ -46,14 +80,25 @@ export interface ProcessReport {
   fallbacks: string[];
 }
 
-export interface ImageResult extends ProcessResult {
+export interface ImageResult extends Omit<ProcessResult, "format"> {
+  /** Output MIME type: a canvas format, or a registered codec's. */
+  format: string;
   report: ProcessReport;
+}
+
+/**
+ * The previous stage's result as plugins see it: the core result
+ * shape with `format` widened to any MIME type (a codec stage may
+ * have produced it).
+ */
+export interface PluginPreviousResult extends Omit<ProcessResult, "format"> {
+  format: string;
 }
 
 /** Context handed to a plugin step. */
 export interface PluginContext {
   /** Result of the previous segment, when one has run. */
-  previous?: ProcessResult;
+  previous?: PluginPreviousResult;
   signal?: AbortSignal;
 }
 
@@ -63,5 +108,10 @@ export interface PluginContext {
  */
 export interface ImagePlugin {
   name: string;
+  /**
+   * The MIME type this step's output carries, when the step changes
+   * it (codec steps set this; the report's format follows it).
+   */
+  format?: string;
   apply: (blob: Blob, context: PluginContext) => Promise<Blob>;
 }

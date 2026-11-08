@@ -24,7 +24,9 @@
  * pipeline step. Its output re-enters the pipeline as a lossless
  * PNG Blob, exactly like every other plugin step.
  */
-import type { ImagePlugin, PluginContext } from "./types.js";
+import type { CodecPluginDefinition, ImagePlugin, PluginContext } from "./types.js";
+
+export type { CodecPluginDefinition };
 
 /** Decodes a Blob into raw pixels (EXIF orientation honoured). */
 export async function blobToImageData(blob: Blob): Promise<ImageData> {
@@ -92,20 +94,6 @@ export async function imageDataToPngBlob(data: PixelDataLike): Promise<Blob> {
   });
 }
 
-export interface CodecPluginDefinition<Options = unknown> {
-  /** Step name for the report. Default: derived from mimeType ('image/avif' -> 'codec:avif'). */
-  name?: string;
-  /** Output MIME type, e.g. 'image/avif'. */
-  mimeType: string;
-  /** The codec package's encode function (ImageData -> encoded bytes). */
-  encode: (
-    data: ImageData,
-    options?: Options,
-  ) => Promise<ArrayBuffer | Uint8Array> | ArrayBuffer | Uint8Array;
-  /** Options forwarded verbatim to the codec's encode. */
-  options?: Options;
-}
-
 export interface ImageDataPluginDefinition {
   /** Step name for the report, e.g. 'resize:quality'. */
   name: string;
@@ -143,6 +131,7 @@ export function codecPlugin<Options = unknown>(def: CodecPluginDefinition<Option
   const name = resolveCodecPluginName(def);
   return {
     name,
+    format: def.mimeType,
     async apply(blob: Blob, context: PluginContext): Promise<Blob> {
       throwIfAborted(context.signal);
       const pixels = await blobToImageData(blob);
@@ -163,6 +152,7 @@ export function imageDataPlugin(def: ImageDataPluginDefinition): ImagePlugin {
   }
   return {
     name: def.name,
+    format: "image/png",
     async apply(blob: Blob, context: PluginContext): Promise<Blob> {
       throwIfAborted(context.signal);
       const pixels = await blobToImageData(blob);
