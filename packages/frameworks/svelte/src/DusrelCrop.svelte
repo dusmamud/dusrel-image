@@ -28,6 +28,7 @@
     style,
   }: DusrelCropProps = $props();
 
+  let host: HTMLDivElement | undefined = $state(undefined);
   let el: DusrelCropElement | undefined = $state(undefined);
   let applyingExternal = false;
 
@@ -43,17 +44,33 @@
   }
 
   onMount(() => {
-    if (!el) return;
+    if (!host) return;
+    // The element is created imperatively in the main document.
+    // Markup-parsed nodes (how Svelte builds templates, via
+    // inert fragments) can fail to upgrade in Safari even after
+    // the tag is registered — the element sits in the DOM
+    // defined-but-unupgraded, with no shadow root and no value.
+    // document.createElement always upgrades. The host div is
+    // display:contents, so it is invisible to layout.
+    const created = document.createElement(
+      "dusrel-crop",
+    ) as unknown as DusrelCropElement;
     const onChange = (event: Event) => {
       const next = (event as CustomEvent<{ crop: CropRect }>).detail.crop;
       crop = next;
       oncropchange?.(next);
     };
-    el.addEventListener("crop-change", onChange);
+    created.addEventListener("crop-change", onChange);
+    host.appendChild(created);
+    el = created;
     // Lazy registration keeps imports of this component SSR-safe:
     // the element module extends HTMLElement at module scope.
     void import("@dusrel/image-crop/element").then((mod) => mod.defineCropElement());
-    return () => el?.removeEventListener("crop-change", onChange);
+    return () => {
+      created.removeEventListener("crop-change", onChange);
+      created.remove();
+      el = undefined;
+    };
   });
 
   // Attributes follow props (imperatively, like the element expects).
@@ -64,6 +81,10 @@
     else el.removeAttribute("aspect");
     if (shape) el.setAttribute("shape", shape);
     else el.removeAttribute("shape");
+    if (className) el.setAttribute("class", className);
+    else el.removeAttribute("class");
+    if (style) el.setAttribute("style", style);
+    else el.removeAttribute("style");
   });
 
   // External crop sets (parent writes bind:crop) drive the element.
@@ -82,4 +103,4 @@
   }
 </script>
 
-<dusrel-crop bind:this={el} class={className} {style}></dusrel-crop>
+<div bind:this={host} style="display:contents"></div>
