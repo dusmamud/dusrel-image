@@ -25,7 +25,30 @@ test("Svelte bindings: compiled crop component relays events, stores process end
     return import(url);
   }, fixture);
 
-  await expect(page.getByTestId("crop")).toContainText('"width":640', { timeout: 15_000 });
+  try {
+    await expect(page.getByTestId("crop")).toContainText('"width":640', { timeout: 15_000 });
+  } catch {
+    // Surface the live DOM state in the failure — WebKit caught a
+    // silent no-mount here once, and the snapshot explains more
+    // than the assertion diff.
+    const diag = await page.evaluate(() => {
+      const el = document.querySelector("dusrel-crop") as unknown as {
+        shadowRoot?: ShadowRoot | null;
+        value?: unknown;
+        getAttribute(name: string): string | null;
+      } | null;
+      return {
+        hasEl: !!el,
+        defined: !!customElements.get("dusrel-crop"),
+        hasShadow: !!el?.shadowRoot,
+        value: el?.value ?? null,
+        srcAttr: el?.getAttribute("src")?.slice(0, 24) ?? null,
+        goDisabled: (document.querySelector('[data-testid="go"]') as HTMLButtonElement)?.disabled,
+        rootChildren: document.getElementById("root")?.childElementCount,
+      };
+    });
+    throw new Error(`crop never arrived; diagnostics: ${JSON.stringify(diag)}`);
+  }
   await expect(page.getByTestId("crop")).toContainText('"height":480');
 
   await page.getByTestId("go").click();
