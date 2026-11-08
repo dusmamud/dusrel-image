@@ -78,6 +78,16 @@ RUN mkdir -p /build/out \
        -o /build/out/jxl_dec.js \
   && ls -la /build/out
 
+# Diagnostic probe module (channels/runner/mode matrix). NOT
+# part of the shipped artifacts: it is only linked here so the
+# smoke gate can isolate encoder failures, and the CMD below
+# never copies it to /out.
+RUN em++ $EMFLAGS -I libjxl/lib/include -I libjxl-build/lib/include wrapper/jxl_probe.cpp \
+       -Wl,--start-group $JXL_COMBINED $BENC $BDEC $SUPPORT -Wl,--end-group \
+       -s EXPORTED_FUNCTIONS='["_dusrel_jxl_probe_encode","_malloc","_free"]' \
+       -o /build/out/jxl_probe.js \
+  && cp /build/out/jxl_probe.js /build/out/jxl_probe.mjs
+
 # Functional smoke gate (the AVIF lesson: a green build is NOT
 # proof). Node here treats .js glue as CommonJS, so the smoke
 # loads .mjs copies, exactly like the other C codecs.
