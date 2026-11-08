@@ -133,6 +133,26 @@ jobs:
           path: wasm-out/resize
           if-no-files-found: error
 
+  libjxl:
+    name: Build libjxl WASM (@dusrel/image-jxl)
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the pinned Docker image
+        run: docker build -t dusrel/jxl native/jxl
+      - name: Run the build and collect artifacts
+        run: |
+          mkdir -p wasm-out/jxl
+          docker run --rm -v "$PWD/wasm-out/jxl:/out" dusrel/jxl
+          ls -la wasm-out/jxl
+      - name: Upload libjxl artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: jxl-wasm
+          path: wasm-out/jxl
+          if-no-files-found: error
+
   rust-qoi:
     name: Build Rust QOI WASM (@dusrel/image-qoi)
     runs-on: ubuntu-latest
