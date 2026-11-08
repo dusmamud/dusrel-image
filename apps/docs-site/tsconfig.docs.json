@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@dusrel/image-core": ["../../packages/core/src/index.ts"],
+      "@dusrel/image": ["../../packages/image/src/index.ts"],
+      "@dusrel/image-crop": ["../../packages/features/crop/src/index.ts"],
+      "@dusrel/image-crop/element": ["../../packages/features/crop/src/element.ts"]
+    }
+  },
+  "include": ["../../packages/*/src", "../../packages/codecs/*/src", "../../packages/features/*/src", "../../packages/frameworks/*/src"]
+}

@@ -8,3 +8,6 @@ test-results/
 playwright-report/
 **/test/.fixture/
 **/test/compiled/
+**/.vitepress/dist/
+**/.vitepress/cache/
+apps/docs-site/public/api/

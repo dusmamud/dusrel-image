@@ -1,0 +1,33 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "../../packages/core/src/index.ts",
+    "../../packages/image/src/index.ts",
+    "../../packages/codecs/jpeg/src/index.ts",
+    "../../packages/codecs/webp/src/index.ts",
+    "../../packages/codecs/avif/src/index.ts",
+    "../../packages/codecs/png/src/index.ts",
+    "../../packages/codecs/oxipng/src/index.ts",
+    "../../packages/codecs/quantize/src/index.ts",
+    "../../packages/codecs/resize/src/index.ts",
+    "../../packages/features/transform/src/index.ts",
+    "../../packages/features/adjust/src/index.ts",
+    "../../packages/features/metadata/src/index.ts",
+    "../../packages/features/watermark/src/index.ts",
+    "../../packages/features/batch/src/index.ts",
+    "../../packages/features/crop/src/index.ts",
+    "../../packages/features/crop/src/element.ts",
+    "../../packages/frameworks/react/src/index.ts",
+    "../../packages/frameworks/vue/src/index.ts",
+    "../../packages/frameworks/svelte/src/index.ts"
+  ],
+  "tsconfig": "./tsconfig.docs.json",
+  "out": "./public/api",
+  "name": "@dusrel/image API",
+  "readme": "none",
+  "categorizeByGroup": false,
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "disableSources": true,
+  "logLevel": "Warn"
+}
