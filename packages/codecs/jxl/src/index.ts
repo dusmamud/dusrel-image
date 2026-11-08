@@ -1,10 +1,16 @@
 /**
  * @dusrel/image-jxl
  *
- * JPEG XL codec (libjxl, WASM). Experimental.
+ * JPEG XL codec (libjxl, WASM, lazy-loaded). Separate encode/decode
+ * entries. The WASM artifacts live in this package's `codec/` folder
+ * and are built reproducibly from libjxl v0.11.2 (see native/jxl).
  *
- * Status: scaffold only — no functionality yet. The locked specification
- * for this package lives in docs/PRD.md, docs/TRD.md and this package's
- * README.md.
+ * EXPERIMENTAL: browser JPEG XL decode support is still limited;
+ * use only where you control the viewing environment.
+ * Single-threaded by construction (ADR-0006): no SharedArrayBuffer
+ * or COOP/COEP requirement.
  */
-export const PACKAGE_NAME = "@dusrel/image-jxl" as const;
+export { encode, initEncode, resolveEncodeOptions } from "./encode.js";
+export { decode, initDecode } from "./decode.js";
+export { setCodecAssets } from "./module.js";
+export type { CodecAssets, JxlEncodeOptions, ResolvedJxlEncodeOptions } from "./types.js";

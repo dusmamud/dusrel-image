@@ -11,6 +11,7 @@
     "../../packages/codecs/quantize/src/index.ts",
     "../../packages/codecs/resize/src/index.ts",
     "../../packages/codecs/qoi/src/index.ts",
+    "../../packages/codecs/jxl/src/index.ts",
     "../../packages/features/transform/src/index.ts",
     "../../packages/features/adjust/src/index.ts",
     "../../packages/features/metadata/src/index.ts",

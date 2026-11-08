@@ -22,6 +22,7 @@ is generated at build time; this file records the standing list.
 | OxiPNG | `@dusrel/image-oxipng` | MIT |
 | `resize`, `hqx`, magic-kernel | `@dusrel/image-resize` | MIT / Apache-2.0 |
 | libjxl | `@dusrel/image-jxl` | BSD 3-Clause |
+| brotli, highway, skcms (libjxl's bundled deps) | `@dusrel/image-jxl` | brotli BSD 3-Clause; highway Apache-2.0; skcms BSD-style (Skia) |
 | libimagequant | — (not used) | GPL-3.0-or-later for FLOSS use; commercial licence required for closed-source/AppStore use — see pngquant.org/lib. **Dropped by decision on 2026-11-07**: `@dusrel/image-quantize` uses a permissive quantizer instead, keeping the package MIT. |
 | gifsicle | — (not used) | GPL-2.0-only; closed-source use requires the author's permission. **Dropped by decision on 2026-11-07**: `@dusrel/image-gif` uses a permissive Rust `gif`-crate based optimiser/encoder instead, keeping the package MIT. |
 | SVGO | `@dusrel/image-svg` | MIT |
