@@ -9,6 +9,11 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./DusrelCrop.svelte": {
+      "types": "./dist/DusrelCrop.svelte.d.ts",
+      "svelte": "./dist/DusrelCrop.svelte",
+      "default": "./dist/DusrelCrop.svelte"
     }
   },
   "main": "./dist/index.js",
@@ -18,7 +23,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdown",
+    "build": "node scripts/compile-fixture.mjs && tsdown && node scripts/copy-svelte.mjs",
     "typecheck": "tsc -p tsconfig.json"
   },
   "publishConfig": {
@@ -38,5 +43,6 @@
   },
   "devDependencies": {
     "svelte": "^5.0.0"
-  }
+  },
+  "svelte": "./dist/index.js"
 }
