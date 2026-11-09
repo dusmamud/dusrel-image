@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-webp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "libwebp codec (WASM, lazy-loaded, SIMD when available). Separate encode/decode entries.",
   "license": "MIT",
   "type": "module",

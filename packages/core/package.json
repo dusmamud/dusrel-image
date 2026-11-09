@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tiny zero-dependency core: decode helpers, Canvas/OffscreenCanvas engine, worker runtime, shared types and typed errors.",
   "license": "MIT",
   "type": "module",

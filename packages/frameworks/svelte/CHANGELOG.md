@@ -1,5 +1,12 @@
 # @dusrel/image-svelte
 
+## 1.0.1
+
+### Patch Changes
+
+- @dusrel/image@1.0.1
+- @dusrel/image-crop@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
