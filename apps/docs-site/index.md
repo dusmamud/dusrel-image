@@ -10,6 +10,9 @@ hero:
       text: Quickstart
       link: /guide/quickstart
     - theme: alt
+      text: Live playground
+      link: https://dusmamud.github.io/dusrel-image/playground/
+    - theme: alt
       text: API reference
       link: /api/index.html
 
@@ -35,6 +38,6 @@ import { processImage } from '@dusrel/image';
 
 const { blob, report } = await processImage(file, {
   format: 'image/webp',
-  targetSize: 200_000, // bytes — the engine searches quality for you
+  maxSizeBytes: 200_000, // byte budget — the engine searches quality for you
 });
 ```

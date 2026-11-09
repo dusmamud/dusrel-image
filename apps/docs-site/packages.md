@@ -4,6 +4,15 @@ Every package is separately installable under the `@dusrel/`
 scope, ESM-only, and versioned in lockstep. No codec WASM is
 ever bundled into the core.
 
+```bash
+npm install @dusrel/image   # the flagship — engine + pipeline + batch
+npm install @dusrel/image-avif @dusrel/image-crop   # or just the pieces you need
+```
+
+Not sure which package a task needs? The [cookbook](/guide/cookbook)
+maps common jobs to packages, and [core concepts](/guide/concepts)
+explains how they compose.
+
 ## Core
 
 | Package | What it does |

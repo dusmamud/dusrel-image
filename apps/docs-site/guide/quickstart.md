@@ -19,7 +19,7 @@ npm install @dusrel/image-avif @dusrel/image-crop
 import { processImage } from '@dusrel/image';
 
 const { blob, report } = await processImage(file, {
-  format: 'image/webp',   // 'image/jpeg' | 'image/png' | 'image/webp' | 'image/avif'
+  format: 'image/webp',   // built in: 'image/jpeg' | 'image/png' | 'image/webp'
   quality: 0.8,           // 0..1 (codec packages use their native scales)
   resize: { width: 1600 },
   crop: { x: 80, y: 60, width: 640, height: 480 },
@@ -28,8 +28,21 @@ const { blob, report } = await processImage(file, {
 console.log(report.stepsApplied, report.savingsRatio);
 ```
 
+Formats beyond the canvas three (AVIF, JPEG XL, QOI, …) come from
+the codec packages — you register the encoder you installed, and
+the format becomes available everywhere:
+
+```ts
+import { encode } from '@dusrel/image-avif';
+
+const { blob } = await processImage(file, {
+  format: 'image/avif',
+  codecs: [{ mimeType: 'image/avif', encode: (d) => encode(d, { quality: 50, speed: 9 }) }],
+});
+```
+
 Instead of guessing a quality, give a byte budget —
-`targetSize: 200_000` — and read `result.targetSizeMet` to
+`maxSizeBytes: 200_000` — and read `result.targetSizeMet` to
 know honestly whether it was reached.
 
 ## Compose with the pipeline
