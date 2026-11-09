@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-metadata",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "EXIF/metadata read, strip (default), preserve, GPS-only removal.",
   "license": "MIT",
   "type": "module",

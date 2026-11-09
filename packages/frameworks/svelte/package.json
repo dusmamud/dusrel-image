@@ -1,6 +1,6 @@
 {
   "name": "@dusrel/image-svelte",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Thin Svelte wrapper over @dusrel/image and @dusrel/image-crop.",
   "license": "MIT",
   "type": "module",
