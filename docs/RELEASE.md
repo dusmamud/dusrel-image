@@ -31,7 +31,9 @@
 - [x] npm scope `@dusrel` ownership confirmed — npm org `dusrel`, registry-verified 2026-11-07
 - [x] Open licence items in THIRD_PARTY_LICENSES.md closed (2026-11-07)
 - [x] Browser matrix green (Chromium/Firefox/WebKit) on the release commit — via Version PR #10's checks (identical package tree), 2026-11-08
-- [ ] Benchmarks show no unexplained regression
+- [x] Benchmarks show no unexplained regression (real runner since
+  2026-11-09: benchmarks/run.mjs, 14 operations, results in
+  benchmarks/results.md; Benchmarks workflow green on bb5fca3)
 - [ ] Manual device pass done (TESTING.md)
 - [x] Docs and per-package READMEs updated; migration guide if major — Vite codec-asset guide added after the consumer test (see below)
 
