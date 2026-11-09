@@ -3,17 +3,27 @@ import type { CodecAssets } from "./types.js";
 
 type DecodeFn = (data: number, size: number, outWidth: number, outHeight: number) => number;
 
-let decodeFn: DecodeFn | undefined;
+let boundDecode: { mod: EmscriptenCodecModule; fn: DecodeFn } | undefined;
 
 async function getDecodeFn(): Promise<{ mod: EmscriptenCodecModule; fn: DecodeFn }> {
   const mod = await loadModule("dec");
-  decodeFn ??= mod.cwrap("dusrel_jxl_decode", "number", [
-    "number",
-    "number",
-    "number",
-    "number",
-  ]) as DecodeFn;
-  return { mod, fn: decodeFn };
+  // The cwrap'd function belongs to one module instance. setCodecAssets
+  // clears the module cache, so a later load can return a different
+  // instance — rebind whenever the instance changes, otherwise the old
+  // instance's function would be called with the new module's pointers
+  // (which silently produced empty output before this fix).
+  if (!boundDecode || boundDecode.mod !== mod) {
+    boundDecode = {
+      mod,
+      fn: mod.cwrap("dusrel_jxl_decode", "number", [
+        "number",
+        "number",
+        "number",
+        "number",
+      ]) as DecodeFn,
+    };
+  }
+  return boundDecode;
 }
 
 /** Loads and instantiates the decoder WASM ahead of first use. */

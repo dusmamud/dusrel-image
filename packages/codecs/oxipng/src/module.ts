@@ -20,7 +20,7 @@ export interface BindgenOxipngGlue {
 let assets: CodecAssets = {};
 let cached: Promise<BindgenOxipngGlue> | undefined;
 
-/** Overrides where the codec assets are loaded from. Call before first use. */
+/** Overrides where the codec assets are loaded from. May be called at any time; the codec reloads from the new URLs on next use. */
 export function setCodecAssets(next: CodecAssets): void {
   assets = { ...assets, ...next };
   cached = undefined;

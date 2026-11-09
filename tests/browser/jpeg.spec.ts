@@ -141,3 +141,37 @@ test("MozJPEG decode: reads a canvas-produced baseline JPEG too", async ({ page 
   });
   expect(r).toEqual({ width: 40, height: 24 });
 });
+
+test("setCodecAssets after first use rebinds to the fresh module instance", async ({ page }) => {
+  // Regression: setCodecAssets clears the loader cache, so the next call
+  // runs on a NEW WASM module instance. The cwrap'd functions must be
+  // bound to that instance — before the fix, the stale binding silently
+  // returned 0 bytes (found by the consumer test, 2026-11-09).
+  const r = await page.evaluate(async () => {
+    const w = window as unknown as {
+      __jpegAssets: Record<string, string>;
+      __jpeg: typeof import("../../packages/codecs/jpeg/src/index.js");
+    };
+    const data = new ImageData(24, 24);
+    for (let i = 0; i < data.data.length; i += 4) {
+      data.data[i] = 200;
+      data.data[i + 1] = 120;
+      data.data[i + 2] = 40;
+      data.data[i + 3] = 255;
+    }
+    const first = new Uint8Array(await w.__jpeg.encode(data, { quality: 80 }));
+    w.__jpeg.setCodecAssets({
+      encodeJsUrl: w.__jpegAssets["encodeJsUrl"],
+      encodeWasmUrl: w.__jpegAssets["encodeWasmUrl"],
+      decodeJsUrl: w.__jpegAssets["decodeJsUrl"],
+      decodeWasmUrl: w.__jpegAssets["decodeWasmUrl"],
+    });
+    const second = new Uint8Array(await w.__jpeg.encode(data, { quality: 80 }));
+    const decoded = await w.__jpeg.decode(second);
+    return { first: first.length, second: second.length, w: decoded.width, h: decoded.height };
+  });
+  expect(r.first).toBeGreaterThan(0);
+  expect(r.second).toBeGreaterThan(0);
+  expect(r.w).toBe(24);
+  expect(r.h).toBe(24);
+});

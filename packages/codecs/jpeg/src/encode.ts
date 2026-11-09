@@ -27,20 +27,30 @@ type EncodeFn = (
   outSize: number,
 ) => number;
 
-let encodeFn: EncodeFn | undefined;
+let boundEncode: { mod: EmscriptenCodecModule; fn: EncodeFn } | undefined;
 
 async function getEncodeFn(): Promise<{ mod: EmscriptenCodecModule; fn: EncodeFn }> {
   const mod = await loadModule("enc");
-  encodeFn ??= mod.cwrap("dusrel_jpeg_encode", "number", [
-    "number",
-    "number",
-    "number",
-    "number",
-    "number",
-    "number",
-    "number",
-  ]) as EncodeFn;
-  return { mod, fn: encodeFn };
+  // The cwrap'd function belongs to one module instance. setCodecAssets
+  // clears the module cache, so a later load can return a different
+  // instance — rebind whenever the instance changes, otherwise the old
+  // instance's function would be called with the new module's pointers
+  // (which silently produced empty output before this fix).
+  if (!boundEncode || boundEncode.mod !== mod) {
+    boundEncode = {
+      mod,
+      fn: mod.cwrap("dusrel_jpeg_encode", "number", [
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+        "number",
+      ]) as EncodeFn,
+    };
+  }
+  return boundEncode;
 }
 
 /** Loads and instantiates the encoder WASM ahead of first use. */

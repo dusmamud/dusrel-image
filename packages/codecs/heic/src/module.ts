@@ -26,7 +26,7 @@ type ModuleFactory = (options: {
 let assets: CodecAssets = {};
 let cached: Promise<EmscriptenCodecModule> | undefined;
 
-/** Overrides where the codec assets are loaded from. Call before first use. */
+/** Overrides where the codec assets are loaded from. May be called at any time; the codec reloads from the new URLs on next use. */
 export function setCodecAssets(next: CodecAssets): void {
   assets = { ...assets, ...next };
   cached = undefined;

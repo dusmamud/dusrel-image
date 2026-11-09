@@ -142,3 +142,37 @@ test("libwebp decode: reads a WebP it did not write (our encoder, browser check)
   expect(r.pixel[1]).toBeGreaterThan(130);
   expect(r.pixel[2]).toBe(255);
 });
+
+test("setCodecAssets after first use rebinds to the fresh module instance", async ({ page }) => {
+  // Regression: setCodecAssets clears the loader cache, so the next call
+  // runs on a NEW WASM module instance. The cwrap'd functions must be
+  // bound to that instance — before the fix, the stale binding silently
+  // returned 0 bytes (found by the consumer test, 2026-11-09).
+  const r = await page.evaluate(async () => {
+    const w = window as unknown as {
+      __webpAssets: Record<string, string>;
+      __webp: typeof import("../../packages/codecs/webp/src/index.js");
+    };
+    const data = new ImageData(24, 24);
+    for (let i = 0; i < data.data.length; i += 4) {
+      data.data[i] = 200;
+      data.data[i + 1] = 120;
+      data.data[i + 2] = 40;
+      data.data[i + 3] = 255;
+    }
+    const first = new Uint8Array(await w.__webp.encode(data, { quality: 80 }));
+    w.__webp.setCodecAssets({
+      encodeJsUrl: w.__webpAssets["encodeJsUrl"],
+      encodeWasmUrl: w.__webpAssets["encodeWasmUrl"],
+      decodeJsUrl: w.__webpAssets["decodeJsUrl"],
+      decodeWasmUrl: w.__webpAssets["decodeWasmUrl"],
+    });
+    const second = new Uint8Array(await w.__webp.encode(data, { quality: 80 }));
+    const decoded = await w.__webp.decode(second);
+    return { first: first.length, second: second.length, w: decoded.width, h: decoded.height };
+  });
+  expect(r.first).toBeGreaterThan(0);
+  expect(r.second).toBeGreaterThan(0);
+  expect(r.w).toBe(24);
+  expect(r.h).toBe(24);
+});

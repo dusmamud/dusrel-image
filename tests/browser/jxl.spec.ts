@@ -121,3 +121,37 @@ test("libjxl lossy roundtrip stays within tolerance", async ({ page }) => {
   expect(r.height).toBe(32);
   expect(r.maxDelta).toBeLessThanOrEqual(16);
 });
+
+test("setCodecAssets after first use rebinds to the fresh module instance", async ({ page }) => {
+  // Regression: setCodecAssets clears the loader cache, so the next call
+  // runs on a NEW WASM module instance. The cwrap'd functions must be
+  // bound to that instance — before the fix, the stale binding silently
+  // returned 0 bytes (found by the consumer test, 2026-11-09).
+  const r = await page.evaluate(async () => {
+    const w = window as unknown as {
+      __jxlAssets: Record<string, string>;
+      __jxl: typeof import("../../packages/codecs/jxl/src/index.js");
+    };
+    const data = new ImageData(24, 24);
+    for (let i = 0; i < data.data.length; i += 4) {
+      data.data[i] = 200;
+      data.data[i + 1] = 120;
+      data.data[i + 2] = 40;
+      data.data[i + 3] = 255;
+    }
+    const first = new Uint8Array(await w.__jxl.encode(data, { lossless: true }));
+    w.__jxl.setCodecAssets({
+      encodeJsUrl: w.__jxlAssets["encodeJsUrl"],
+      encodeWasmUrl: w.__jxlAssets["encodeWasmUrl"],
+      decodeJsUrl: w.__jxlAssets["decodeJsUrl"],
+      decodeWasmUrl: w.__jxlAssets["decodeWasmUrl"],
+    });
+    const second = new Uint8Array(await w.__jxl.encode(data, { lossless: true }));
+    const decoded = await w.__jxl.decode(second);
+    return { first: first.length, second: second.length, w: decoded.width, h: decoded.height };
+  });
+  expect(r.first).toBeGreaterThan(0);
+  expect(r.second).toBeGreaterThan(0);
+  expect(r.w).toBe(24);
+  expect(r.h).toBe(24);
+});

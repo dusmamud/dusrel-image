@@ -161,3 +161,26 @@ test("non-HEIC input is rejected before any decoder runs", async ({ page }) => {
   });
   expect(message).toContain("RangeError");
 });
+
+test("setCodecAssets after first use rebinds the decoder to the fresh instance", async ({
+  page,
+}) => {
+  // Same regression as the encoder codecs: re-setting assets must not
+  // leave the decoder calling the previous module instance.
+  const r = await page.evaluate(async () => {
+    const w = window as unknown as {
+      __heicAssets: Record<string, string>;
+      __heic: typeof import("../../packages/codecs/heic/src/index.js");
+      __heicFixture: Uint8Array;
+    };
+    const first = await w.__heic.decodeHeicWasm(w.__heicFixture);
+    w.__heic.setCodecAssets({
+      jsUrl: w.__heicAssets["jsUrl"],
+      wasmUrl: w.__heicAssets["wasmUrl"],
+    });
+    const second = await w.__heic.decodeHeicWasm(w.__heicFixture);
+    return { first: [first.width, first.height], second: [second.width, second.height] };
+  });
+  expect(r.first).toEqual([1280, 854]);
+  expect(r.second).toEqual([1280, 854]);
+});
