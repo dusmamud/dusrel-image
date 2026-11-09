@@ -4,16 +4,26 @@ export default defineConfig({
   title: "@dusrel/image",
   description:
     "Tiny, no-backend, client-side image processing for any web app — compress, crop, resize, rotate, convert, with WASM codecs and maximum developer control.",
+  // Deployed as a GitHub Pages project site:
+  // https://dusmamud.github.io/dusrel-image/
+  base: "/dusrel-image/",
   cleanUrls: true,
+  lastUpdated: true,
   // The TypeDoc HTML reference lives in public/api and is copied
   // verbatim — keep VitePress out of it.
   srcExclude: ["public/**", "README.md"],
   themeConfig: {
+    search: { provider: "local" },
+    editLink: {
+      pattern: "https://github.com/dusmamud/dusrel-image/edit/main/apps/docs-site/:path",
+      text: "Edit this page on GitHub",
+    },
     nav: [
       { text: "Guide", link: "/guide/quickstart" },
       { text: "Architecture", link: "/guide/architecture" },
       { text: "Packages", link: "/packages" },
       { text: "API reference", link: "/api/index.html" },
+      { text: "Playground", link: "https://dusmamud.github.io/dusrel-image/playground/" },
     ],
     sidebar: [
       {

@@ -16,7 +16,14 @@
           "@dusrel/image-crop/element": "../../packages/features/crop/dist/element.js",
           "@dusrel/image-avif": "../../packages/codecs/avif/dist/index.js",
           "@dusrel/image-webp": "../../packages/codecs/webp/dist/index.js",
-          "@dusrel/image-jpeg": "../../packages/codecs/jpeg/dist/index.js"
+          "@dusrel/image-jpeg": "../../packages/codecs/jpeg/dist/index.js",
+          "@dusrel/image-png": "../../packages/codecs/png/dist/index.js",
+          "@dusrel/image-jxl": "../../packages/codecs/jxl/dist/index.js",
+          "@dusrel/image-qoi": "../../packages/codecs/qoi/dist/index.js",
+          "@dusrel/image-gif": "../../packages/features/gif/dist/index.js",
+          "@dusrel/image-oxipng": "../../packages/codecs/oxipng/dist/index.js",
+          "@dusrel/image-placeholder": "../../packages/features/placeholder/dist/index.js",
+          "@dusrel/image-heic": "../../packages/codecs/heic/dist/index.js"
         }
       }
     </script>
@@ -32,6 +39,10 @@
         <h2>1 · Image</h2>
         <input type="file" id="file" accept="image/*" />
         <p class="hint">…or drop an image anywhere on this page.</p>
+        <p>
+          <button id="loadSample" type="button">Load the sample image</button>
+          <button id="loadHeic" type="button">Load sample.heic (WASM decode)</button>
+        </p>
         <div id="stage" hidden>
           <dusrel-crop id="cropper" style="width: 100%; height: 380px"></dusrel-crop>
           <label><input type="checkbox" id="useCrop" checked /> Apply crop</label>
@@ -59,17 +70,33 @@
               <option value="image/webp">WebP (canvas)</option>
               <option value="image/jpeg">JPEG (canvas)</option>
               <option value="image/png">PNG (canvas)</option>
-              <option value="wasm-webp">WebP (WASM codec)</option>
-              <option value="wasm-jpeg">JPEG · MozJPEG (WASM)</option>
               <option value="wasm-avif">AVIF (WASM)</option>
+              <option value="wasm-jpeg">JPEG · MozJPEG (WASM)</option>
+              <option value="wasm-webp">WebP (WASM codec)</option>
+              <option value="wasm-png">PNG · Rust (WASM)</option>
+              <option value="wasm-jxl">JPEG XL (WASM)</option>
+              <option value="wasm-qoi">QOI (WASM)</option>
+              <option value="wasm-gif">GIF (WASM, single frame)</option>
             </select>
           </label>
           <label>Quality <input type="range" id="quality" min="5" max="100" value="80" /> <span id="qualityVal">80</span></label>
           <label>Max width (px, 0 = original) <input type="number" id="maxWidth" min="0" value="0" /></label>
+          <label>
+            Rotate
+            <select id="rotate">
+              <option value="0">0°</option>
+              <option value="90">90°</option>
+              <option value="180">180°</option>
+              <option value="270">270°</option>
+            </select>
+          </label>
+          <label><input type="checkbox" id="flipH" /> Flip horizontal</label>
+          <label><input type="checkbox" id="flipV" /> Flip vertical</label>
           <label>Brightness <input type="range" id="brightness" min="-50" max="50" value="0" /></label>
           <label>Contrast <input type="range" id="contrast" min="-50" max="50" value="0" /></label>
           <label>Saturation <input type="range" id="saturation" min="-100" max="100" value="0" /></label>
           <label>Watermark text <input type="text" id="watermark" placeholder="© your name" /></label>
+          <label><input type="checkbox" id="useOxipng" /> Optimise PNG output with OxiPNG (when format is PNG)</label>
         </div>
         <button id="process" disabled>Process image</button>
         <progress id="progress" max="1" value="0" hidden></progress>
@@ -90,10 +117,28 @@
         <progress id="batchProgress" max="1" value="0" hidden></progress>
         <ul id="batchOut"></ul>
       </section>
+
+      <section class="card">
+        <h2>4 · Placeholders</h2>
+        <p class="hint">ThumbHash and BlurHash for the loaded image, from <code>@dusrel/image-placeholder</code> (pure TypeScript, no WASM).</p>
+        <button id="genHashes" disabled>Generate placeholders</button>
+        <div id="hashOut" hidden>
+          <p>ThumbHash<br /><code id="thumbHash"></code></p>
+          <p>BlurHash<br /><code id="blurHash"></code></p>
+          <canvas id="thumbPreview" width="96" height="54"></canvas>
+          <p class="hint">ThumbHash, decoded back at 96×54.</p>
+        </div>
+      </section>
     </main>
 
     <footer>
-      <p>Built on the workspace packages via an import map to their <code>dist/</code> builds. Run <code>pnpm build</code> at the repo root, serve the repo root statically, and open <code>/apps/playground/</code>.</p>
+      <p>
+        Deployed with the docs site at
+        <a href="https://dusmamud.github.io/dusrel-image/">dusmamud.github.io/dusrel-image</a>.
+        Locally: built on the workspace packages via an import map to their <code>dist/</code> builds —
+        run <code>pnpm build</code> at the repo root, serve the repo root statically, and open
+        <code>/apps/playground/</code>.
+      </p>
     </footer>
     <script type="module" src="./main.js"></script>
   </body>

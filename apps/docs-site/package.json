@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vitepress dev",
-    "build": "pnpm run build:api && vitepress build",
+    "build": "pnpm run build:api && vitepress build && node scripts/assemble-playground.mjs",
     "build:api": "typedoc",
     "preview": "vitepress preview"
   },

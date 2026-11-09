@@ -66,8 +66,16 @@ install, e.g. `npm install @dusrel/image-jpeg @dusrel/image-webp`.
 
 ## Documentation
 
-Start with `docs/PRD.md` (product) and `docs/TRD.md` (technical). All planning
-documents live in `docs/`; every major decision is recorded in `docs/adr/`.
+**Online:** the full documentation site — guides, the package index and the
+TypeDoc API reference — is live at
+[dusmamud.github.io/dusrel-image](https://dusmamud.github.io/dusrel-image/),
+with a live playground at
+[dusmamud.github.io/dusrel-image/playground](https://dusmamud.github.io/dusrel-image/playground/)
+(every codec and tool in the family, running in your browser).
+
+In the repo, start with `docs/PRD.md` (product) and `docs/TRD.md`
+(technical). All planning documents live in `docs/`; every major decision
+is recorded in `docs/adr/`.
 
 ## Licence
 

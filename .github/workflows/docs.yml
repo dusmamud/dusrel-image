@@ -6,12 +6,19 @@ on:
     paths:
       - 'docs/**'
       - 'apps/docs-site/**'
+      - 'apps/playground/**'
       - 'packages/**'
       - 'README.md'
   workflow_dispatch:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   docs:
@@ -31,7 +38,7 @@ jobs:
           cache: pnpm
       - name: Install (frozen lockfile)
         run: pnpm install --frozen-lockfile
-      - name: Build the docs site (TypeDoc API reference + VitePress)
+      - name: Build the docs site (TypeDoc API reference + VitePress + playground)
         run: pnpm --filter @dusrel/docs-site build
       - name: Upload the built site
         uses: actions/upload-artifact@v7
@@ -39,3 +46,21 @@ jobs:
           name: docs-site
           path: apps/docs-site/.vitepress/dist
           retention-days: 14
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload the Pages site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/docs-site/.vitepress/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: docs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
