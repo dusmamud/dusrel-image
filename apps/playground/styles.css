@@ -236,3 +236,50 @@ footer {
 footer code {
   color: var(--text-2);
 }
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 640px) {
+  body {
+    padding: 22px 14px 52px;
+  }
+
+  header h1 {
+    font-size: 21px;
+    gap: 10px;
+  }
+
+  .logo-img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .card {
+    padding: 18px 16px;
+    margin: 14px 0;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  dusrel-crop {
+    height: 300px !important;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  button + button {
+    margin-left: 0;
+  }
+
+  pre {
+    font-size: 11px;
+  }
+
+  img#outImg {
+    width: 100%;
+  }
+}

@@ -100,9 +100,7 @@ export default defineConfig({
       },
     ],
     socialLinks: [{ icon: "github", link: "https://github.com/dusmamud/dusrel-image" }],
-    footer: {
-      message: "Released under the MIT License.",
-      copyright: "Copyright © 2026 Dus Mamud",
-    },
+    // No themeConfig.footer: the theme renders a full SiteFooter
+    // (brand + link columns + licence bar) in the layout-bottom slot.
   },
 });
