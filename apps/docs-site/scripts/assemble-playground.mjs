@@ -30,7 +30,7 @@ if (!existsSync(path.join(packagesDir, "image/dist/index.js"))) {
 }
 
 mkdirSync(outDir, { recursive: true });
-for (const f of ["styles.css", "main.js"]) {
+for (const f of ["styles.css", "main.js", "logo.svg"]) {
   cpSync(path.join(playgroundDir, f), path.join(outDir, f));
 }
 

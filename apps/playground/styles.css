@@ -1,16 +1,19 @@
-/* @dusrel/image playground — graphite test-bench theme, shared with
-   the consumer test site so the family reads as one product. */
+/* @dusrel/image playground — Dusrel brand grading, matched to
+   dusrel.com: dark #121212 / #e8eaed, brand blue #4d90fe
+   (deep #3b78e7), Sora display + Inter text. */
 :root {
-  --bg: #0e0f12;
-  --surface: #15161b;
-  --surface-2: #1a1b21;
-  --line: rgba(255, 255, 255, 0.08);
-  --text: #e8e9eb;
-  --text-2: #b9bcc4;
-  --muted: #8a8f9a;
-  --accent: #e0a83c;
+  --bg: #121212;
+  --surface: #1e1e1e;
+  --surface-2: #262626;
+  --line: rgba(232, 234, 237, 0.1);
+  --text: #e8eaed;
+  --text-2: #bdc1c6;
+  --muted: #9aa0a6;
+  --accent: #4d90fe;
+  --accent-deep: #3b78e7;
   --green: #4cc38a;
-  --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Sora", "Inter", system-ui, sans-serif;
   --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
   color-scheme: dark;
 }
@@ -37,20 +40,21 @@ header {
 }
 
 header h1 {
+  font-family: var(--display);
   font-size: 26px;
-  font-weight: 650;
+  font-weight: 700;
   letter-spacing: -0.01em;
   margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-header h1::before {
-  content: "";
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-  background: var(--accent);
-  margin-right: 12px;
+.logo-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  flex: none;
 }
 
 header p {
@@ -68,8 +72,9 @@ header p {
 }
 
 .card h2 {
+  font-family: var(--display);
   font-size: 17px;
-  font-weight: 650;
+  font-weight: 700;
   margin: 0 0 14px;
 }
 
@@ -134,11 +139,15 @@ button {
   margin-top: 14px;
   padding: 9px 18px;
   font: 500 14px var(--sans);
-  color: #171203;
+  color: #ffffff;
   background: var(--accent);
   border: none;
   border-radius: 999px;
   cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: var(--accent-deep);
 }
 
 button:disabled {

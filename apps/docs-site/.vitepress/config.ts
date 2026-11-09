@@ -12,7 +12,16 @@ export default defineConfig({
   sitemap: { hostname: "https://dusmamud.github.io/dusrel-image/" },
   head: [
     ["link", { rel: "icon", type: "image/svg+xml", href: "/dusrel-image/logo.svg" }],
-    ["meta", { name: "theme-color", content: "#0e0f12" }],
+    ["link", { rel: "preconnect", href: "https://fonts.googleapis.com" }],
+    ["link", { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" }],
+    [
+      "link",
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap",
+      },
+    ],
+    ["meta", { name: "theme-color", content: "#121212" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:title", content: "@dusrel/image — client-side image processing" }],
     [

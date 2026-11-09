@@ -4,6 +4,9 @@ layout: home
 hero:
   name: "@dusrel/image"
   text: "Client-side image processing, done properly"
+  image:
+    src: /logo.svg
+    alt: Dusrel logo
   tagline: Compress, crop, resize, rotate and convert images entirely in the browser. No backend, no uploads, no server cost — with WASM codecs and maximum developer control.
   actions:
     - theme: brand
