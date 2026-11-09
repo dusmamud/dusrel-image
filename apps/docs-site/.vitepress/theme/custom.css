@@ -54,6 +54,29 @@ h3,
   }
 }
 
+/* ---------- Browser support table icons ---------- */
+
+/* Inline SVG status icons for the landing page's browser-support
+   table — real icons instead of ✅ emoji. The glyphs are data-URI
+   backgrounds so each table cell stays a one-line span. */
+.bs-ic {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.22em;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.bs-yes {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2335a06f' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='m8.3 12.4 2.5 2.5 4.9-5.4'/%3E%3C/svg%3E");
+}
+
+.bs-fallback {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234d90fe' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a9 9 0 1 1-2.64-6.36'/%3E%3Cpath d='M21 3v6h-6'/%3E%3C/svg%3E");
+}
+
 /* ---------- Landing page sections ---------- */
 
 .stats-strip {

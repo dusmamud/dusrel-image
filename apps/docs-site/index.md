@@ -142,9 +142,9 @@ WebKit (Playwright) — the 1.0.x releases are green on all three.
 
 | | Chrome / Edge | Firefox | Safari |
 | --- | --- | --- | --- |
-| Core + canvas formats | ✅ | ✅ | ✅ (16.4+ for the worker path) |
-| WASM codecs | ✅ | ✅ | ✅ |
-| HEIC decode | WASM fallback | WASM fallback | Native (17+), WASM elsewhere |
+| Core + canvas formats | <span class="bs-ic bs-yes" role="img" aria-label="Supported"></span> | <span class="bs-ic bs-yes" role="img" aria-label="Supported"></span> | <span class="bs-ic bs-yes" role="img" aria-label="Supported"></span> (16.4+ for the worker path) |
+| WASM codecs | <span class="bs-ic bs-yes" role="img" aria-label="Supported"></span> | <span class="bs-ic bs-yes" role="img" aria-label="Supported"></span> | <span class="bs-ic bs-yes" role="img" aria-label="Supported"></span> |
+| HEIC decode | <span class="bs-ic bs-fallback" role="img" aria-label="Via WASM fallback"></span> WASM fallback | <span class="bs-ic bs-fallback" role="img" aria-label="Via WASM fallback"></span> WASM fallback | <span class="bs-ic bs-yes" role="img" aria-label="Supported"></span> Native (17+), WASM elsewhere |
 
 [Full support matrix and known quirks →](/guide/browser-support)
 
