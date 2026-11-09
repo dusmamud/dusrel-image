@@ -161,6 +161,7 @@ const year = 2026;
   color: var(--vp-c-text-3);
 }
 
+
 @media (max-width: 860px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr;
