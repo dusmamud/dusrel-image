@@ -1,9 +1,8 @@
 # Codec Guide: dusrel-image
 
 Per-codec options, defaults and traps. All codecs are separate sub-packages
-with lazy-loaded WASM (see TRD.md). Sizes below are the upstream WASM
-binaries' approximate sizes at research time (Nov 2026) and must be
-re-measured at build time.
+with lazy-loaded WASM (see TRD.md). Sizes below are the shipped artifacts,
+measured from the published 1.0.0 packages (encoder / decoder WASM).
 
 ## Codec assets and bundlers
 
@@ -19,22 +18,23 @@ React + Vite consumer project: exclude the codec packages from
 `optimizeDeps`, or pass `?url` imports to `setCodecAssets`. The
 Quickstart's "WASM codecs with Vite" section has both recipes.
 
-## JPEG — `@dusrel/image-jpeg` (MozJPEG, ~246 KB WASM)
-- Controls: quality (0..100 mapped from the API's 0..1), progressive on/off,
+## JPEG — `@dusrel/image-jpeg` (MozJPEG — enc 420 KB, dec 171 KB WASM)
+- Controls: quality 1..100 (default 75), progressive on/off (default on),
   chroma subsampling (4:4:4 / 4:2:2 / 4:2:0), optimised Huffman tables.
 - Trap: JPEG has no alpha. Transparent pixels are flattened onto a
   configurable background colour (default white) — always, and documented in
   the result report.
 - Expectation: ~53% median saving at quality 0.75 on photographic content.
 
-## WebP — `@dusrel/image-webp` (libwebp, ~275-337 KB WASM, SIMD when available)
+## WebP — `@dusrel/image-webp` (libwebp — enc 271 KB, dec 129 KB WASM)
 - Controls: lossy/lossless, quality, effort/method 0..6, alpha quality,
   near-lossless.
 - Note: re-encoding an already-optimised WebP gains little (~17% in
   benchmarks). Do not pre-quantise before WebP — it makes results worse.
 
-## AVIF — `@dusrel/image-avif` (libavif + libaom, ~2.8-3.3 MB WASM)
-- Controls: quality, alpha quality, speed 0..10, lossless, chroma.
+## AVIF — `@dusrel/image-avif` (libavif + libaom — enc 3.56 MB, dec 3.64 MB WASM)
+- Controls: quality 0..100 (default 50), alpha quality, speed 0..10
+  (default 9), pixel format (4:2:0 / 4:4:4 / 4:2:2).
 - **Default speed is 9.** Measured upstream: a 12 MP photo at speed 7 took
   ~140 s single-threaded; speed 9 took ~40 s. Lower speeds are an explicit
   developer choice.
@@ -69,10 +69,18 @@ Quickstart's "WASM codecs with Vite" section has both recipes.
   default when the developer does not select this package.
 
 ## Experimental / optional
-- `@dusrel/image-jxl` (libjxl): excellent compression, but browser decode
-  support is still limited — ship behind an "experimental" label.
-- `@dusrel/image-qoi`: niche, near-zero cost, optional.
-- GIF (`@dusrel/image-gif`) and SVG (`@dusrel/image-svg`): optimisers, not
-  pixel codecs. GIF engine decided 2026-11-07: a permissive Rust `gif`-crate
-  based optimiser/encoder; gifsicle was dropped on licence grounds
-  (GPL-2.0-only) so the package stays MIT (THIRD_PARTY_LICENSES.md).
+- `@dusrel/image-jxl` (libjxl — enc 2.40 MB, dec 905 KB WASM): excellent
+  compression, but browser decode support is still limited — ship behind
+  an "experimental" label.
+- `@dusrel/image-qoi` (enc 34 KB, dec 36 KB WASM): niche, near-zero cost,
+  optional.
+- `@dusrel/image-heic` (decoder 1.20 MB WASM): **decode-only**, native-first
+  — Safari 17+ decodes HEIC itself, other browsers fall back to the WASM
+  engine (libheif + libde265, LGPL-3.0, fenced to this package per
+  ADR-0008; the wrapper is MIT). No encoder: the only HEVC encoders are
+  GPL (x265) or patent-encumbered.
+- GIF (`@dusrel/image-gif`, 128 KB WASM) and SVG (`@dusrel/image-svg`):
+  optimisers, not pixel codecs. GIF engine decided 2026-11-07: a
+  permissive Rust `gif`-crate based optimiser/encoder; gifsicle was
+  dropped on licence grounds (GPL-2.0-only) so the package stays MIT
+  (THIRD_PARTY_LICENSES.md).

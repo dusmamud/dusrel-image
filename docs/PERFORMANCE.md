@@ -6,31 +6,40 @@ See TRD.md section 5. A budget increase requires an ADR.
 
 ## Benchmark method
 
-- Corpus: `benchmarks/corpus/` — a fixed, licence-clean set of real images
-  (DSLR-style photos, screenshots/UI, social exports, mixed 200 KB - 12 MB),
-  documented per image. Synthetic test cards are not used for headline
-  numbers (they flatter codecs).
-- Environment: recorded per run (browser version, device class, warm cache
-  for WASM). Medians are reported; expect roughly +-15% per-image variance.
-- Every PR that touches processing runs the benchmark workflow and posts a
-  comparison comment against the base branch.
+- Runner: `benchmarks/run.mjs` (Node, against the built packages). The
+  Benchmarks workflow runs it weekly and on demand and uploads the
+  report as an artifact; `benchmarks/results.md` is the committed
+  record of the latest run.
+- Corpus: three deterministic synthetic images generated inside the
+  runner from a seeded PRNG — a photo-like gradient with per-pixel
+  noise (384×288), flat UI-like blocks (800×600) and an alpha pattern
+  (256×256). Licence-clean by construction: the generator is the
+  source. A corpus of real photographs is future work; until then,
+  treat the numbers as regression tracking, not marketing claims.
+- Times are medians (5 runs after 1 warmup; AVIF 3, metadata 25),
+  single-threaded WASM exactly as shipped. Node timings differ from
+  browser timings; the Playwright suite is the browser correctness
+  gate, this benchmark is the size/time regression gate.
 
-## Reference numbers (upstream research, Nov 2026 — to be re-measured)
+## Measured numbers (benchmarks/run.mjs, 2026-11-09, Node 24)
 
-Measured on a 100-image mixed corpus at quality 0.75 with the same engines
-dusrel-image will ship:
+Same photo-like input (384×288, 442,368 raw RGBA bytes) through each
+encoder:
 
-| Format | Engine | Median reduction |
-| --- | --- | --- |
-| JPEG | MozJPEG | ~53% |
-| PNG (lossy) | quantizer + PNG (reference figure measured with imagequant; the shipped permissive quantizer is benchmarked in Phase 3) | ~75% |
-| WebP | libwebp (re-encode) | ~17% |
-| AVIF | libavif (speed 6 in that study) | ~59% |
-| GIF | GIF optimiser, lossy (reference figure measured with gifsicle -O3; the shipped Rust `gif`-crate engine is benchmarked in Phase 3) | ~75% |
-| SVG | SVGO multipass | ~42% |
+| Operation | Out (bytes) | Median (ms) |
+| --- | ---: | ---: |
+| AVIF encode q50, speed 9 | 7,285 | 31.1 |
+| JPEG encode q80 (MozJPEG) | 14,859 | 34.6 |
+| WebP encode q80 (libwebp) | 23,856 | 59.1 |
+| PNG encode (lossless) | 213,460 | 50.5 |
+| OxiPNG optimise of that PNG, level 2 | 191,632 | 122.1 |
+| JPEG decode | — | 2.7 |
+| Resize lanczos3 to 50% | — | 4.0 |
 
-Note: dusrel-image ships AVIF at default speed 9 (see CODEC_GUIDE.md), so its
-AVIF time/size balance will differ from the study's speed-6 row.
+Full table (14 operations, incl. quantize, placeholders, metadata,
+SVG): `benchmarks/results.md`. Upstream research figures quoted during
+planning (MozJPEG ~53% median saving at q75 on real photos, etc.) were
+superseded by these first-party measurements on 2026-11-09.
 
 ## Time targets
 

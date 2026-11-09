@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   bench:
-    name: Bundle budgets snapshot
+    name: Bundle budgets + codec benchmarks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -21,9 +21,13 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - name: Record current bundle sizes (the 100-image corpus benchmark arrives in Phase 1)
+      - name: Record current bundle sizes
         run: pnpm size | tee benchmark-sizes.txt
+      - name: Run codec benchmarks (benchmarks/run.mjs)
+        run: node benchmarks/run.mjs
       - uses: actions/upload-artifact@v7
         with:
-          name: benchmark-sizes
-          path: benchmark-sizes.txt
+          name: benchmark-results
+          path: |
+            benchmark-sizes.txt
+            benchmarks/results.md

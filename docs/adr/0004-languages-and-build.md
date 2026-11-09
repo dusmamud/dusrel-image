@@ -17,3 +17,10 @@ maintainer with many packages.
 ## Consequences
 tsup is not used (unmaintained; tsdown is its Rolldown-based successor).
 Node version is pinned repo-wide so builds are reproducible.
+
+> **Addendum (2026-11-09):** the Rust pipeline is implemented with plain
+> `cargo build --target wasm32-unknown-unknown` + the wasm-bindgen CLI
+> (version pinned to the crate's) rather than the wasm-pack wrapper —
+> one less moving part, same output. The decision's substance (Rust
+> codecs compiled via wasm-bindgen, reproducibly, inside Docker) is
+> unchanged.

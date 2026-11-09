@@ -25,7 +25,8 @@ Hard rule: **no codec WASM is ever bundled into the core or the main package.**
 ## 2. Languages & build (locked, ADR-0004)
 
 - Own code: TypeScript (strict) throughout; JavaScript is build output only.
-- C/C++ codecs compiled with **Emscripten**; Rust codecs with **wasm-pack**;
+- C/C++ codecs compiled with **Emscripten**; Rust codecs with
+  **cargo + the wasm-bindgen CLI** (pinned to the crate version);
   native builds run only inside pinned Docker images (WASM_BUILD.md).
 - New WASM modules: Rust-first; C/C++ only where the upstream library is C/C++.
 - Package build: **tsdown** (Rolldown). Apps (playground, docs): Vite.

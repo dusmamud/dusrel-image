@@ -8,8 +8,21 @@ Built from scratch under the `@dusrel/` npm scope, modelled on the proven
 sub-package architecture of jSquash / Google Squoosh: every codec and tool is its
 own separately installable, separately lazy-loaded package.
 
-> Status: **planning / documentation phase**. No public API is stable yet.
-> The decisions in `docs/` (PRD, TRD, ADRs) are locked and govern all code.
+> Status: **1.0.0 — published on npm (2026-11-08).** All 24 packages are
+> live under the `@dusrel/` scope and were verified end-to-end in a
+> separate React + Vite consumer project
+> ([dusrel-consumer-test](https://github.com/dusmamud/dusrel-consumer-test),
+> 43/43 pack-smoke checks). The locked decisions in `docs/` (PRD, TRD,
+> ADRs) governed the build; release record in `docs/RELEASE.md`.
+
+## Install
+
+```sh
+npm install @dusrel/image
+```
+
+Add only the codec and feature packages you use — each is a separate
+install, e.g. `npm install @dusrel/image-jpeg @dusrel/image-webp`.
 
 ## Packages
 
@@ -26,6 +39,7 @@ own separately installable, separately lazy-loaded package.
 | `@dusrel/image-resize` | High-quality resize (Lanczos and more) |
 | `@dusrel/image-jxl` | JPEG XL codec — experimental |
 | `@dusrel/image-qoi` | QOI codec — optional |
+| `@dusrel/image-heic` | HEIC decode — native-first (Safari), libheif WASM fallback |
 | `@dusrel/image-crop` | Interactive cropping (Web Components) |
 | `@dusrel/image-transform` | Rotate, flip, perspective, background fill |
 | `@dusrel/image-adjust` | Brightness, contrast, saturation, sharpness, filters |
@@ -34,6 +48,7 @@ own separately installable, separately lazy-loaded package.
 | `@dusrel/image-batch` | Multi-file queue, progress, cancellation, worker pool |
 | `@dusrel/image-gif` | GIF optimisation (incl. animated) |
 | `@dusrel/image-svg` | SVG optimisation |
+| `@dusrel/image-placeholder` | ThumbHash + BlurHash placeholder encode / decode |
 | `@dusrel/image-react` / `-vue` / `-svelte` | Thin framework wrappers |
 
 ## Design promises
@@ -41,7 +56,7 @@ own separately installable, separately lazy-loaded package.
 1. **No backend, ever.** All processing is client-side. The packages make no
    network calls except fetching their own WASM assets.
 2. **Tiny by default.** The core is zero-dependency with a hard size budget
-   (10 KB gzip, enforced in CI). Heavy codecs download only when selected.
+   (10 KB, enforced in CI via size-limit). Heavy codecs download only when selected.
 3. **Maximum features, maximum control.** Sensible defaults for beginners;
    every step, codec, fallback and threshold overridable for professionals.
 4. **One consistent API shape** across every sub-package: input, options,
@@ -58,7 +73,6 @@ documents live in `docs/`; every major decision is recorded in `docs/adr/`.
 
 MIT for dusrel-image's own code. Third-party codecs keep their own licences
 (Apache-2.0 and others) — see `NOTICE` and `THIRD_PARTY_LICENSES.md`.
-Tip: start with `docs/PRD.md` for the product view and `docs/TRD.md` for the technical view — every major decision is recorded in `docs/adr/`.
-Note: this repo is in the planning / documentation phase and no public API is stable yet — the locked decisions in `docs/` govern all code.
-Heavy codecs download only when selected, so the default load stays tiny — the core has a hard 10 KB gzip size budget enforced in CI.
-Every sub-package shares one API shape — input, options, progress, cancellation via AbortSignal, and typed errors.
+One exception, fenced to a single package: the decoder engine inside
+`@dusrel/image-heic` (libheif + libde265) is LGPL-3.0; the package's own
+code stays MIT (ADR-0008).

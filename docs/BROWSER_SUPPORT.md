@@ -9,11 +9,19 @@
 | OffscreenCanvas in worker | yes | yes (105+) | 16.4+, with quirks |
 | WebP encode via canvas | yes | yes | 17+ (older may silently return PNG) |
 | AVIF encode via canvas | Chromium 130+ only | no | no |
+| HEIC decode | no (WASM fallback) | no (WASM fallback) | 17+ native |
 | WebCodecs ImageDecoder | yes | no | no |
 | SharedArrayBuffer (multi-thread WASM) | with COOP/COEP | with COOP/COEP | with COOP/COEP |
 
 Figures are the cross-verified research baseline (Nov 2026) and must be
 re-checked in CI against the Playwright matrix before each release.
+
+**Verified for 1.0.0:** the Playwright matrix (Chromium, Firefox,
+WebKit) runs every package's browser spec and was green on the release
+head; the consumer test additionally exercised the published packages
+in a real Vite build. Safari's HEIC support is why
+`@dusrel/image-heic` probes native decode first and only downloads its
+WASM engine where the probe fails.
 
 ## Rules
 

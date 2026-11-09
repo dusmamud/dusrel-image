@@ -129,8 +129,13 @@
 > `@dusrel/image-heic` shipped on top of this phase
 > (libheif v1.23.7 + libde265 1.0.15, decode-only,
 > native-first; engine LGPL-3.0, wrapper MIT).
-> Open: a first npm release via Changesets (org `dusrel`
-> exists, nothing published yet).
+> **First npm release SHIPPED 2026-11-08: all 24 packages live at
+> 1.0.0** (Changesets flow; record in docs/RELEASE.md). The published
+> packages were then verified in a separate React + Vite consumer
+> project (43/43 pack-smoke checks; repo:
+> github.com/dusmamud/dusrel-consumer-test). Post-release hardening
+> still open: trusted-publishing migration per package, then revoke
+> the bootstrap NPM_TOKEN (expires 2027-02-06).
 
 ## Later / explicitly not v1
 - Client-side AI plugins (e.g. background removal with on-device models) —
