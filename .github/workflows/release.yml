@@ -33,7 +33,7 @@ jobs:
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
       - name: Create Release PR or publish to npm
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
           publish: pnpm run release
         env:
