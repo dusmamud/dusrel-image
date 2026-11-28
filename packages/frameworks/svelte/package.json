@@ -39,10 +39,10 @@
     "@dusrel/image-crop": "workspace:*"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^5.59.1"
   },
   "devDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^5.59.1"
   },
   "svelte": "./dist/index.js"
 }
